@@ -100,8 +100,21 @@ switch ($path) {
         break;
 
     case '/brands':
+    case '/brands.php':
         require_once __DIR__ . '/source/controllers/BrandsController.php';
         BrandsController::handle();
+        break;
+
+    case '/scales':
+    case '/scales.php':
+        require_once __DIR__ . '/source/controllers/ScalesController.php';
+        ScalesController::handle();
+        break;
+
+    case '/conditions':
+    case '/conditions.php':
+        require_once __DIR__ . '/source/controllers/ConditionsController.php';
+        ConditionsController::handle();
         break;
 
     case '/':
@@ -110,6 +123,8 @@ switch ($path) {
         $canAccessUsers = $user ? PermissionService::canAccess($user, 'users') : false;
         $canAccessRoles = $user ? PermissionService::canAccess($user, 'roles') : false;
         $canAccessBrands = $user ? PermissionService::canAccess($user, 'brands') : false;
+        $canAccessScales = $user ? PermissionService::canAccess($user, 'scales') : false;
+        $canAccessConditions = $user ? PermissionService::canAccess($user, 'conditions') : false;
         require __DIR__ . '/source/views/home.php';
         break;
 

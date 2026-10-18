@@ -2763,5 +2763,277 @@ body.sidebar-active {
     }
 }
 
+/* =============================================================================
+   Models Collection Master-Detail Layout, Color Picker & Camera Styles
+   ============================================================================= */
+.models-layout {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    margin-top: 1rem;
+}
+
+.models-form-col {
+    flex: 0 0 490px;
+    width: 490px;
+    max-width: 490px;
+    position: sticky;
+    top: 1rem;
+    box-sizing: border-box;
+}
+
+.models-grid-col {
+    flex: 1;
+    min-width: 0;
+}
+
+.form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
+}
+
+@media (max-width: 600px) {
+    .form-row-2,
+    .form-row-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Interactive Color Picker Widget */
+.model-color-picker-widget {
+    position: relative;
+}
+
+.model-color-picker-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    text-align: left;
+    background: #141923;
+    border: 1px solid #283448;
+    color: #e2e8f0;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+    border-radius: var(--radius-sm);
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease;
+}
+
+.model-color-picker-trigger:hover,
+.model-color-picker-trigger:focus-visible {
+    border-color: #38bdf8;
+    outline: none;
+}
+
+.model-color-swatch-box {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+.model-color-swatch-box.is-empty {
+    border: 1px dashed rgba(255, 255, 255, 0.35);
+    background: transparent !important;
+}
+
+.model-color-trigger-text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.model-color-chevron {
+    color: var(--color-text-dim);
+    margin-left: auto;
+}
+
+.model-color-picker-popover {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    width: 100%;
+    min-width: 230px;
+    max-height: 230px;
+    overflow-y: auto;
+    background: #0f141d;
+    border: 1px solid #283448;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+    z-index: 100;
+    display: none;
+    padding: 4px;
+    box-sizing: border-box;
+}
+
+.model-color-picker-popover.is-open {
+    display: block;
+}
+
+.model-color-picker-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.82rem;
+    color: #e2e8f0;
+    transition: background 0.1s ease;
+}
+
+.model-color-picker-item:hover {
+    background: #1e293b;
+}
+
+.model-color-picker-item.is-selected {
+    background: rgba(56, 189, 248, 0.15);
+    font-weight: 600;
+    color: #38bdf8;
+}
+
+.model-color-item-name {
+    flex: 1;
+}
+
+.model-color-item-hex {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-text-dim);
+}
+
+/* Color in Grid */
+.model-color-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+}
+
+.model-color-swatch-sm {
+    width: 12px;
+    height: 12px;
+    min-width: 12px;
+    border-radius: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: inline-block;
+}
+
+/* Thumbnail in Grid */
+.model-grid-thumb-wrap {
+    width: 44px;
+    height: 30px;
+    background: #090c12;
+    border: 1px solid #1c2332;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    overflow: hidden;
+    padding: 1px;
+}
+
+.model-grid-thumb {
+    max-width: 42px;
+    max-height: 28px;
+    object-fit: cover;
+    border-radius: 2px;
+}
+
+.model-grid-thumb-empty {
+    color: var(--color-text-dim);
+}
+
+/* Photo Upload and Mobile Camera */
+.model-photo-btn-row {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr 1fr;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+}
+
+.model-camera-btn {
+    background: #1e293b;
+    border: 1px solid #38bdf8;
+    color: #38bdf8;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+}
+
+.model-camera-btn:hover {
+    background: rgba(56, 189, 248, 0.18);
+    color: #ffffff;
+    border-color: #7dd3fc;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+}
+
+.model-upload-status {
+    margin-top: 0.35rem;
+    text-align: center;
+    font-family: var(--font-mono);
+}
+
+.model-description-area {
+    height: 80px;
+    min-height: 80px;
+    max-height: 80px;
+    resize: none;
+    overflow-y: auto;
+    line-height: 1.45;
+    font-family: var(--font-body);
+    box-sizing: border-box;
+}
+
+.input-with-action {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+}
+
+.input-link-btn {
+    padding: 0 0.5rem;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-link-btn.is-disabled {
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+/* Model Grid Condition Badge (Compact & Red) */
+.model-condition-badge {
+    font-size: 0.65rem !important;
+    padding: 0.15rem 0.45rem !important;
+    font-weight: 600 !important;
+    vertical-align: middle;
+    margin-left: 0.4rem;
+    color: #ff4d47 !important;
+    background-color: rgba(225, 6, 0, 0.16) !important;
+    border: 1px solid rgba(225, 6, 0, 0.45) !important;
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.04em;
+    display: inline-block;
+}
+
 
 

@@ -212,7 +212,8 @@ class BrandsController {
         // ---------------------------------------------------------------------
         // 5. Build and Configure Grid Controller
         // ---------------------------------------------------------------------
-        $allBrands = BrandRepository::getAll();
+        $currentUserId = !empty($currentUser['id']) ? (int)$currentUser['id'] : null;
+        $allBrands = BrandRepository::getAll($currentUserId);
 
         $selectedId = !empty($selectedBrand) ? (int)$selectedBrand['id'] : 0;
 
@@ -252,6 +253,19 @@ class BrandsController {
             'formatter'  => function($val) {
                 $safeName = htmlspecialchars((string)$val, ENT_QUOTES, 'UTF-8');
                 return '<span class="brand-grid-name"><strong>' . $safeName . '</strong></span>';
+            },
+        ]);
+
+        // Models count column (in badges format)
+        $grid->addColumn('models_count', 'Models', [
+            'sortable'   => true,
+            'filterable' => false,
+            'align'      => 'center',
+            'width'      => '95px',
+            'formatter'  => function($val) {
+                $count = (int)$val;
+                $badgeClass = $count > 0 ? 'badge-primary' : 'badge-secondary';
+                return '<span class="badge ' . $badgeClass . '" style="min-width: 28px; font-weight: 700;">' . $count . '</span>';
             },
         ]);
 

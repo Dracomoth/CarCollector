@@ -212,7 +212,8 @@ class MakersController {
         // ---------------------------------------------------------------------
         // 5. Build and Configure Grid Controller
         // ---------------------------------------------------------------------
-        $allMakers = MakerRepository::getAll();
+        $currentUserId = !empty($currentUser['id']) ? (int)$currentUser['id'] : null;
+        $allMakers = MakerRepository::getAll($currentUserId);
 
         $selectedId = !empty($selectedMaker) ? (int)$selectedMaker['id'] : 0;
 
@@ -252,6 +253,19 @@ class MakersController {
             'formatter'  => function($val) {
                 $safeName = htmlspecialchars((string)$val, ENT_QUOTES, 'UTF-8');
                 return '<span class="maker-grid-name brand-grid-name"><strong>' . $safeName . '</strong></span>';
+            },
+        ]);
+
+        // Models count column (in badges format)
+        $grid->addColumn('models_count', 'Models', [
+            'sortable'   => true,
+            'filterable' => false,
+            'align'      => 'center',
+            'width'      => '95px',
+            'formatter'  => function($val) {
+                $count = (int)$val;
+                $badgeClass = $count > 0 ? 'badge-primary' : 'badge-secondary';
+                return '<span class="badge ' . $badgeClass . '" style="min-width: 28px; font-weight: 700;">' . $count . '</span>';
             },
         ]);
 

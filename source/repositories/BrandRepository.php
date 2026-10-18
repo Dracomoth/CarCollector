@@ -12,19 +12,46 @@ class BrandRepository {
      * Retrieve all brands ordered by name
      * 
      * @return array
+    /**
+     * Retrieve all brands ordered by name, with models count
+     * 
+     * @param int|null $userId If supplied, counts models for that user; otherwise overall.
+     * @return array
      */
-    public static function getAll(): array {
+    public static function getAll(?int $userId = null): array {
         $pdo = Database::getConnection();
         if (!$pdo) {
             return [];
         }
 
         try {
-            $stmt = $pdo->query("SELECT `id`, `name`, `description`, `logo_path`, `created`, `modified` FROM `brands` ORDER BY `name` ASC");
+            if ($userId !== null && $userId > 0) {
+                $sql = "SELECT b.`id`, b.`name`, b.`description`, b.`logo_path`, b.`created`, b.`modified`,
+                               COUNT(m.`id`) AS `models_count`
+                        FROM `brands` b
+                        LEFT JOIN `models` m ON m.`brand_id` = b.`id` AND m.`user_id` = :uid
+                        GROUP BY b.`id`, b.`name`, b.`description`, b.`logo_path`, b.`created`, b.`modified`
+                        ORDER BY b.`name` ASC";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['uid' => $userId]);
+            } else {
+                $sql = "SELECT b.`id`, b.`name`, b.`description`, b.`logo_path`, b.`created`, b.`modified`,
+                               COUNT(m.`id`) AS `models_count`
+                        FROM `brands` b
+                        LEFT JOIN `models` m ON m.`brand_id` = b.`id`
+                        GROUP BY b.`id`, b.`name`, b.`description`, b.`logo_path`, b.`created`, b.`modified`
+                        ORDER BY b.`name` ASC";
+                $stmt = $pdo->query($sql);
+            }
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         } catch (Throwable $e) {
-            error_log("Failed to fetch brands: " . $e->getMessage());
-            return [];
+            try {
+                $stmt = $pdo->query("SELECT `id`, `name`, `description`, `logo_path`, `created`, `modified`, 0 AS `models_count` FROM `brands` ORDER BY `name` ASC");
+                return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+            } catch (Throwable $e2) {
+                error_log("Failed to fetch brands: " . $e2->getMessage());
+                return [];
+            }
         }
     }
 

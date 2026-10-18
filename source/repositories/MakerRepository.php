@@ -9,22 +9,46 @@ require_once dirname(__DIR__) . '/services/Database.php';
 
 class MakerRepository {
     /**
-     * Retrieve all makers ordered by name
+    /**
+     * Retrieve all makers ordered by name, with models count
      * 
+     * @param int|null $userId If supplied, counts models for that user; otherwise overall.
      * @return array
      */
-    public static function getAll(): array {
+    public static function getAll(?int $userId = null): array {
         $pdo = Database::getConnection();
         if (!$pdo) {
             return [];
         }
 
         try {
-            $stmt = $pdo->query("SELECT `id`, `name`, `description`, `logo_path`, `created`, `modified` FROM `makers` ORDER BY `name` ASC");
+            if ($userId !== null && $userId > 0) {
+                $sql = "SELECT mk.`id`, mk.`name`, mk.`description`, mk.`logo_path`, mk.`created`, mk.`modified`,
+                               COUNT(m.`id`) AS `models_count`
+                        FROM `makers` mk
+                        LEFT JOIN `models` m ON m.`maker_id` = mk.`id` AND m.`user_id` = :uid
+                        GROUP BY mk.`id`, mk.`name`, mk.`description`, mk.`logo_path`, mk.`created`, mk.`modified`
+                        ORDER BY mk.`name` ASC";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute(['uid' => $userId]);
+            } else {
+                $sql = "SELECT mk.`id`, mk.`name`, mk.`description`, mk.`logo_path`, mk.`created`, mk.`modified`,
+                               COUNT(m.`id`) AS `models_count`
+                        FROM `makers` mk
+                        LEFT JOIN `models` m ON m.`maker_id` = mk.`id`
+                        GROUP BY mk.`id`, mk.`name`, mk.`description`, mk.`logo_path`, mk.`created`, mk.`modified`
+                        ORDER BY mk.`name` ASC";
+                $stmt = $pdo->query($sql);
+            }
             return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
         } catch (Throwable $e) {
-            error_log("Failed to fetch makers: " . $e->getMessage());
-            return [];
+            try {
+                $stmt = $pdo->query("SELECT `id`, `name`, `description`, `logo_path`, `created`, `modified`, 0 AS `models_count` FROM `makers` ORDER BY `name` ASC");
+                return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+            } catch (Throwable $e2) {
+                error_log("Failed to fetch makers: " . $e2->getMessage());
+                return [];
+            }
         }
     }
 

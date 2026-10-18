@@ -9,7 +9,7 @@ require __DIR__ . '/layout/header.php';
             <p class="text-muted">You have successfully authenticated. This area is protected by the authentication guard.</p>
 
             <!-- Screens Navigation Section -->
-            <?php if (!empty($canAccessUsers) || !empty($canAccessRoles) || !empty($canAccessBrands) || !empty($canAccessScales) || !empty($canAccessConditions)): ?>
+            <?php if (!empty($canAccessUsers) || !empty($canAccessRoles) || !empty($canAccessBrands) || !empty($canAccessScales) || !empty($canAccessConditions) || !empty($canAccessColors)): ?>
                 <div class="section">
                     <h2>Accessible Screens</h2>
                     <p class="text-muted" style="margin-bottom: 1rem;">Modules available based on your assigned role permissions:</p>
@@ -51,6 +51,14 @@ require __DIR__ . '/layout/header.php';
                                 <span class="info-label" style="color: var(--color-primary);">Screen &bull; Metadata</span>
                                 <span class="info-value" style="font-size: 1.1rem; font-weight: 600;">Conditions &rarr;</span>
                                 <span class="text-muted text-sm">Manage model car grading conditions (Mint, Scratches, Junkyard, etc.).</span>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if (!empty($canAccessColors)): ?>
+                            <a href="/colors" class="info-item" style="text-decoration: none; color: inherit; transition: border-color 0.15s ease;">
+                                <span class="info-label" style="color: var(--color-primary);">Screen &bull; Metadata</span>
+                                <span class="info-value" style="font-size: 1.1rem; font-weight: 600;">Colors &rarr;</span>
+                                <span class="text-muted text-sm">Manage model car paint and trim colors with hex codes.</span>
                             </a>
                         <?php endif; ?>
                     </div>

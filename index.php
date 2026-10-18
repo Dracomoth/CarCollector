@@ -117,6 +117,12 @@ switch ($path) {
         ConditionsController::handle();
         break;
 
+    case '/colors':
+    case '/colors.php':
+        require_once __DIR__ . '/source/controllers/ColorsController.php';
+        ColorsController::handle();
+        break;
+
     case '/':
         require_once __DIR__ . '/source/services/PermissionService.php';
         $user = $_SESSION['user'] ?? null;
@@ -125,6 +131,7 @@ switch ($path) {
         $canAccessBrands = $user ? PermissionService::canAccess($user, 'brands') : false;
         $canAccessScales = $user ? PermissionService::canAccess($user, 'scales') : false;
         $canAccessConditions = $user ? PermissionService::canAccess($user, 'conditions') : false;
+        $canAccessColors = $user ? PermissionService::canAccess($user, 'colors') : false;
         require __DIR__ . '/source/views/home.php';
         break;
 

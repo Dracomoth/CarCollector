@@ -481,11 +481,7 @@ class GridController {
                                         </select>
                                     </div>
                                 <?php else: ?>
-                                    <div class="grid-search-wrap">
-                                        <svg class="grid-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="11" cy="11" r="8"></circle>
-                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                        </svg>
+                                    <div class="grid-search-wrap <?= $filterVal !== '' ? 'has-clear' : '' ?>">
                                         <input type="text" 
                                                name="<?= $fieldName ?>" 
                                                value="<?= htmlspecialchars($filterVal, ENT_QUOTES, 'UTF-8') ?>" 
@@ -494,6 +490,10 @@ class GridController {
                                                data-col-key="<?= htmlspecialchars($col['key'], ENT_QUOTES, 'UTF-8') ?>"
                                                autocomplete="off"
                                                onkeydown="if(event.key==='Enter'){this.form.submit();}">
+                                        <svg class="grid-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                        </svg>
                                         <?php if ($filterVal !== ''): ?>
                                             <a href="<?= htmlspecialchars($clearUrl, ENT_QUOTES, 'UTF-8') ?>" class="grid-search-clear" title="Clear filter">&times;</a>
                                         <?php endif; ?>
@@ -511,16 +511,16 @@ class GridController {
                             <?php endif; ?>
                         <?php endforeach; ?>
 
-                        <div class="grid-search-wrap">
-                            <svg class="grid-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                            </svg>
+                        <div class="grid-search-wrap <?= $this->globalSearch !== '' ? 'has-clear' : '' ?>">
                             <input type="text" 
                                    name="q" 
                                    value="<?= htmlspecialchars($this->globalSearch, ENT_QUOTES, 'UTF-8') ?>" 
                                    placeholder="Search all columns..." 
                                    class="grid-search-input">
+                            <svg class="grid-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
                             <?php if ($this->globalSearch !== ''): ?>
                                 <a href="<?= htmlspecialchars($this->buildUrl(['q' => null, 'page' => 1]), ENT_QUOTES, 'UTF-8') ?>" class="grid-search-clear" title="Clear search">&times;</a>
                             <?php endif; ?>

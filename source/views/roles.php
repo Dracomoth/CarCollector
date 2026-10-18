@@ -1,34 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roles & Permissions - BasePHP</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
-</head>
-<body>
-    <header class="app-header">
-        <div class="container header-container">
-            <div class="header-left">
-                <a href="/" class="brand">BasePHP</a>
-                <?php 
-                require_once dirname(__DIR__) . '/services/PermissionService.php';
-                $canAccessUsers = PermissionService::canAccess($currentUser, 'users');
-                ?>
-                <nav class="nav-links">
-                    <a href="/" class="nav-link">Dashboard</a>
-                    <?php if (!empty($canAccessUsers)): ?>
-                        <a href="/users" class="nav-link">Users</a>
-                    <?php endif; ?>
-                    <a href="/roles" class="nav-link active">Roles</a>
-                </nav>
-            </div>
-            <div class="user-meta">
-                <span>Welcome, <strong><?= htmlspecialchars($currentUser['username'] ?? 'User', ENT_QUOTES, 'UTF-8') ?></strong></span>
-                <a href="/logout" class="btn btn-outline btn-sm">Log Out</a>
-            </div>
-        </div>
-    </header>
+<?php
+$pageTitle = 'Roles & Permissions - CarCollector';
+require __DIR__ . '/layout/header.php';
+?>
 
     <main class="container page-content">
         <div class="page-header">
@@ -257,5 +230,6 @@
             });
         }
     </script>
-</body>
-</html>
+<?php
+require __DIR__ . '/layout/footer.php';
+?>

@@ -1,0 +1,311 @@
+<?php
+/**
+ * Global Application Layout Header & Sidebar
+ * 
+ * Reusable header, brand bar, collection telemetry badges,
+ * user avatar/initials, and dynamic sliding sidebar.
+ */
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once dirname(__DIR__, 2) . '/services/Database.php';
+require_once dirname(__DIR__, 2) . '/services/CollectionService.php';
+require_once dirname(__DIR__, 2) . '/repositories/ScreenRepository.php';
+require_once dirname(__DIR__, 2) . '/repositories/SystemInfoRepository.php';
+
+$currentUser = $currentUser ?? $user ?? ($_SESSION['user'] ?? []);
+$pageTitle = $pageTitle ?? 'CarCollector - Scale Car Collection';
+
+// Total cars in collection
+$totalCars = CollectionService::getTotalCars();
+
+// Current path for active link state
+$currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+$currentPath = rtrim($currentPath, '/');
+if ($currentPath === '') {
+    $currentPath = '/';
+}
+
+// User avatar & initials calculation
+$userAvatar = !empty($currentUser['avatar_path']) ? $currentUser['avatar_path'] : null;
+$firstName = trim($currentUser['first_name'] ?? '');
+$lastName = trim($currentUser['last_name'] ?? '');
+if ($firstName !== '' || $lastName !== '') {
+    $firstChar = function_exists('mb_substr') ? mb_substr($firstName, 0, 1) : substr($firstName, 0, 1);
+    $lastChar = function_exists('mb_substr') ? mb_substr($lastName, 0, 1) : substr($lastName, 0, 1);
+    $userInitials = strtoupper($firstChar . $lastChar);
+    $userDisplayName = trim($firstName . ' ' . $lastName);
+} else {
+    $u = $currentUser['username'] ?? 'CC';
+    $chars = function_exists('mb_substr') ? mb_substr($u, 0, 2) : substr($u, 0, 2);
+    $userInitials = strtoupper($chars);
+    $userDisplayName = $currentUser['username'] ?? 'User';
+}
+
+// Fetch accessible screens for current user and device context
+$accessibleScreens = ScreenRepository::getAccessibleScreens($currentUser);
+
+// Group screens by category, respecting sort_order and grouped flag
+$categories = [];
+foreach ($accessibleScreens as $screen) {
+    $catName = !empty($screen['category']) ? trim($screen['category']) : 'General';
+    if (!isset($categories[$catName])) {
+        $categories[$catName] = [
+            'name'            => $catName,
+            'grouped_items'   => [],
+            'ungrouped_items' => [],
+        ];
+    }
+    if (!empty($screen['grouped'])) {
+        $categories[$catName]['grouped_items'][] = $screen;
+    } else {
+        $categories[$catName]['ungrouped_items'][] = $screen;
+    }
+}
+
+/**
+ * Helper to render contextual SVG icon for a screen key
+ */
+if (!function_exists('renderScreenIcon')) {
+    function renderScreenIcon(string $screenKey): string {
+        switch ($screenKey) {
+            case 'users':
+                return '<svg class="sidebar-link-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>';
+            case 'roles':
+                return '<svg class="sidebar-link-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>';
+            case 'cars':
+            case 'collection':
+                return '<svg class="sidebar-link-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h12l3 5v4h-2"></path><path d="M5 12h14"></path></svg>';
+            case 'dashboard':
+            case 'home':
+                return '<svg class="sidebar-link-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>';
+            default:
+                return '<svg class="sidebar-link-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>';
+        }
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?></title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body class="has-cockpit-layout">
+
+    <!-- ======================================================================= -->
+    <!-- Application Header (Telemetry & Navigation Bar) -->
+    <!-- ======================================================================= -->
+    <header class="app-header">
+        <div class="container header-container">
+            <!-- Left: Sandwich Toggle, Brand Title, Description, Collection Badges -->
+            <div class="header-left">
+                <!-- Sandwich Hamburger Button to open sidebar -->
+                <button type="button" 
+                        class="sidebar-toggle-btn" 
+                        id="sidebar-open-btn" 
+                        aria-label="Open sidebar navigation" 
+                        aria-controls="app-sidebar"
+                        aria-expanded="false"
+                        title="Open navigation menu">
+                    <svg class="icon-hamburger" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+
+                <!-- Brand Title and Tagline Description -->
+                <div class="header-brand-wrap">
+                    <a href="/" class="brand" title="CarCollector Dashboard">
+                        <span class="brand-text">CarCollector</span>
+                    </a>
+                    <span class="brand-divider">/</span>
+                    <span class="brand-tagline">scale car collection</span>
+                </div>
+
+                <!-- Collection Overall Count Info Badges -->
+                <div class="header-badges">
+                    <div class="collection-badge badge-primary" title="Total scale cars in collection overall">
+                        <span class="badge-icon">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="7" cy="17" r="2"></circle>
+                                <circle cx="17" cy="17" r="2"></circle>
+                                <path d="M5 17H3v-4l2-5h12l3 5v4h-2"></path>
+                                <path d="M5 12h14"></path>
+                            </svg>
+                        </span>
+                        <span class="badge-label">COLLECTION</span>
+                        <span class="badge-count"><?= number_format($totalCars) ?></span>
+                        <span class="badge-unit"><?= $totalCars === 1 ? 'CAR' : 'CARS' ?></span>
+                    </div>
+
+                    <div class="collection-badge badge-secondary" title="Overall inventory telemetry">
+                        <span class="badge-status-dot"></span>
+                        <span class="badge-label">TOTAL OVERALL:</span>
+                        <span class="badge-value"><?= number_format($totalCars) ?></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Logged User Avatar (or initials) -->
+            <div class="header-right">
+                <div class="user-avatar-container" id="user-avatar-container">
+                    <button type="button" 
+                            class="user-avatar-trigger" 
+                            id="user-avatar-trigger" 
+                            aria-haspopup="true" 
+                            aria-expanded="false" 
+                            title="<?= htmlspecialchars($userDisplayName) ?> (<?= htmlspecialchars($currentUser['username'] ?? 'User') ?>)">
+                        <?php if (!empty($userAvatar)): ?>
+                            <img src="<?= htmlspecialchars($userAvatar, ENT_QUOTES, 'UTF-8') ?>" 
+                                 alt="<?= htmlspecialchars($userDisplayName, ENT_QUOTES, 'UTF-8') ?>" 
+                                 class="user-avatar-img">
+                        <?php else: ?>
+                            <div class="user-avatar-initials"><?= htmlspecialchars($userInitials, ENT_QUOTES, 'UTF-8') ?></div>
+                        <?php endif; ?>
+                    </button>
+
+                    <!-- User Quick Dropdown -->
+                    <div class="user-dropdown-panel" id="user-dropdown-panel" aria-hidden="true">
+                        <div class="user-dropdown-profile">
+                            <div class="user-dropdown-name"><?= htmlspecialchars($userDisplayName, ENT_QUOTES, 'UTF-8') ?></div>
+                            <div class="user-dropdown-username">@<?= htmlspecialchars($currentUser['username'] ?? 'user', ENT_QUOTES, 'UTF-8') ?></div>
+                            <div class="user-dropdown-role">
+                                <span class="badge"><?= htmlspecialchars($currentUser['role_name'] ?? 'User', ENT_QUOTES, 'UTF-8') ?></span>
+                                <?php if (!empty($currentUser['is_super'])): ?>
+                                    <span class="badge badge-primary">SuperAdmin</span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <nav class="user-dropdown-links">
+                            <a href="/" class="user-dropdown-link">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                                <span>Dashboard</span>
+                            </a>
+                            <a href="/logout" class="user-dropdown-link text-danger">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                                <span>Log Out</span>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ======================================================================= -->
+    <!-- Sliding Sidebar Drawer & Backdrop Overlay -->
+    <!-- ======================================================================= -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop" aria-hidden="true"></div>
+
+    <aside class="app-sidebar" id="app-sidebar" aria-label="Main Navigation">
+        <!-- Sidebar Top: Brand Title & 'X' Close Button -->
+        <div class="sidebar-header">
+            <div class="sidebar-brand-group">
+                <a href="/" class="sidebar-brand-title">CarCollector</a>
+                <span class="sidebar-brand-tagline">scale car collection</span>
+            </div>
+            <!-- X Close Button replacing sandwich icon -->
+            <button type="button" 
+                    class="sidebar-close-btn" 
+                    id="sidebar-close-btn" 
+                    aria-label="Close sidebar" 
+                    title="Close navigation">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Sidebar Navigation Content -->
+        <div class="sidebar-content">
+            <!-- Dashboard Primary Link -->
+            <div class="sidebar-section">
+                <a href="/" class="sidebar-nav-link <?= $currentPath === '/' ? 'active' : '' ?>">
+                    <span class="sidebar-icon-box">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </span>
+                    <span class="sidebar-nav-text">Dashboard</span>
+                </a>
+            </div>
+
+            <!-- Dynamic Screens Navigation with category separators and grouped logic -->
+            <?php foreach ($categories as $catName => $catData): ?>
+                <div class="sidebar-separator" role="separator"></div>
+                <div class="sidebar-section">
+                    <!-- Ungrouped Screens (displayed at section level without category heading) -->
+                    <?php if (!empty($catData['ungrouped_items'])): ?>
+                        <div class="sidebar-ungrouped-items">
+                            <?php foreach ($catData['ungrouped_items'] as $item): ?>
+                                <?php 
+                                $href = ($item['screen_key'] === 'home' || $item['screen_key'] === 'dashboard') ? '/' : '/' . ltrim($item['screen_key'], '/');
+                                $isActive = ($currentPath === $href);
+                                ?>
+                                <a href="<?= htmlspecialchars($href) ?>" class="sidebar-nav-link <?= $isActive ? 'active' : '' ?>">
+                                    <span class="sidebar-icon-box"><?= renderScreenIcon($item['screen_key']) ?></span>
+                                    <span class="sidebar-nav-text"><?= htmlspecialchars($item['name']) ?></span>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Grouped Screens (displayed grouped under the category heading) -->
+                    <?php if (!empty($catData['grouped_items'])): ?>
+                        <div class="sidebar-category-block">
+                            <div class="sidebar-category-header">
+                                <span class="sidebar-category-title"><?= htmlspecialchars($catName) ?></span>
+                            </div>
+                            <div class="sidebar-category-items">
+                                <?php foreach ($catData['grouped_items'] as $item): ?>
+                                    <?php 
+                                    $href = ($item['screen_key'] === 'home' || $item['screen_key'] === 'dashboard') ? '/' : '/' . ltrim($item['screen_key'], '/');
+                                    $isActive = ($currentPath === $href);
+                                    ?>
+                                    <a href="<?= htmlspecialchars($href) ?>" class="sidebar-nav-link sidebar-grouped-link <?= $isActive ? 'active' : '' ?>">
+                                        <span class="sidebar-icon-box"><?= renderScreenIcon($item['screen_key']) ?></span>
+                                        <span class="sidebar-nav-text"><?= htmlspecialchars($item['name']) ?></span>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
+        <!-- Sidebar Footer (Logged User summary & Quick Logout) -->
+        <div class="sidebar-footer">
+            <div class="sidebar-user-summary">
+                <?php if (!empty($userAvatar)): ?>
+                    <img src="<?= htmlspecialchars($userAvatar, ENT_QUOTES, 'UTF-8') ?>" 
+                         alt="Avatar" 
+                         class="sidebar-avatar-img">
+                <?php else: ?>
+                    <div class="sidebar-avatar-initials"><?= htmlspecialchars($userInitials, ENT_QUOTES, 'UTF-8') ?></div>
+                <?php endif; ?>
+                <div class="sidebar-user-text">
+                    <span class="sidebar-user-name"><?= htmlspecialchars($userDisplayName, ENT_QUOTES, 'UTF-8') ?></span>
+                    <span class="sidebar-user-role"><?= htmlspecialchars($currentUser['role_name'] ?? 'User', ENT_QUOTES, 'UTF-8') ?></span>
+                </div>
+            </div>
+            <a href="/logout" class="sidebar-logout-btn" title="Log Out" aria-label="Log Out">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+            </a>
+        </div>
+    </aside>

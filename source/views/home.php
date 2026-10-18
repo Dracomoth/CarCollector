@@ -1,33 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - BasePHP</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
-</head>
-<body>
-    <header class="app-header">
-        <div class="container header-container">
-            <div class="header-left">
-                <a href="/" class="brand">BasePHP</a>
-                <nav class="nav-links">
-                    <a href="/" class="nav-link active">Dashboard</a>
-                    <?php if (!empty($canAccessUsers)): ?>
-                        <a href="/users" class="nav-link">Users</a>
-                    <?php endif; ?>
-                    <?php if (!empty($canAccessRoles)): ?>
-                        <a href="/roles" class="nav-link">Roles</a>
-                    <?php endif; ?>
-                </nav>
-            </div>
-            <div class="user-meta">
-                <span>Welcome, <strong><?= htmlspecialchars($user['username'] ?? 'User', ENT_QUOTES, 'UTF-8') ?></strong></span>
-                <a href="/logout" class="btn btn-outline btn-sm">Log Out</a>
-            </div>
-        </div>
-    </header>
-
+<?php
+$pageTitle = 'Dashboard - CarCollector';
+$currentUser = $user ?? ($_SESSION['user'] ?? []);
+require __DIR__ . '/layout/header.php';
+?>
     <main class="container page-content">
         <div class="card">
             <h1>Protected Dashboard</h1>
@@ -90,5 +65,6 @@
             </div>
         </div>
     </main>
-</body>
-</html>
+<?php
+require __DIR__ . '/layout/footer.php';
+?>

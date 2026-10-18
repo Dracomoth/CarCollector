@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - BasePHP</title>
+    <title>Login - CarCollector</title>
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body class="auth-page">
@@ -36,9 +36,17 @@
         </div>
 
         <footer class="auth-footer">
-            <span>System: <?= htmlspecialchars($systemVersion ?? 'N/A', ENT_QUOTES, 'UTF-8') ?></span>
-            <span class="dot">&bull;</span>
-            <span>Database: <?= htmlspecialchars($databaseVersion ?? 'N/A', ENT_QUOTES, 'UTF-8') ?></span>
+            <div style="display: flex; justify-content: center; margin-bottom: 0.65rem;">
+                <div class="db-status-pill <?= !empty($isDbOnline) ? 'is-online' : 'is-offline' ?>">
+                    <span class="db-status-dot"></span>
+                    <span class="db-status-text">Database <?= !empty($isDbOnline) ? 'Online' : 'Offline' ?></span>
+                </div>
+            </div>
+            <div>
+                <span>System: <?= htmlspecialchars($systemVersion ?? 'N/A', ENT_QUOTES, 'UTF-8') ?></span>
+                <span class="dot">&bull;</span>
+                <span>Database: <?= htmlspecialchars($databaseVersion ?? 'N/A', ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
         </footer>
     </div>
 </body>

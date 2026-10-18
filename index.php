@@ -61,7 +61,9 @@ switch ($path) {
             }
         }
 
+        require_once __DIR__ . '/source/services/Database.php';
         require_once __DIR__ . '/source/repositories/SystemInfoRepository.php';
+        $isDbOnline = Database::isOnline();
         $systemVersions = SystemInfoRepository::getAllVersions();
         $systemVersion = $systemVersions['system'] ?? 'N/A';
         $databaseVersion = $systemVersions['database'] ?? 'N/A';

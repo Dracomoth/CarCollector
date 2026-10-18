@@ -266,6 +266,103 @@ class UsersController {
         $roles = RoleRepository::getAll();
         $currentUser = $_SESSION['user'];
 
+        // Configure Grid Controller for tabular display, filtering, sorting and pagination
+        require_once __DIR__ . '/GridController.php';
+
+        $roleOptions = [];
+        foreach ($roles as $r) {
+            $roleOptions[$r['name']] = $r['name'];
+        }
+
+        $grid = new GridController([
+            'id'               => 'users-grid',
+            'action'           => '/users',
+            'per_page'         => 25,
+            'allowed_per_page' => [10, 25, 50, 100],
+            'default_sort'     => 'id',
+            'default_order'    => 'asc',
+            'row_url'          => fn($u) => '/users?action=edit&id=' . (int)$u['id'],
+        ]);
+
+        $grid->addColumn('username', 'Username', [
+            'sortable'   => true,
+            'filterable' => true,
+            'formatter'  => fn($val) => '<strong>' . htmlspecialchars((string)$val, ENT_QUOTES, 'UTF-8') . '</strong>',
+        ]);
+
+        $grid->addColumn('full_name', 'Full Name', [
+            'sortable'     => true,
+            'filterable'   => true,
+            'value_getter' => fn($u) => trim(($u['first_name'] ?? '') . ' ' . ($u['last_name'] ?? '')),
+        ]);
+
+        $grid->addColumn('email', 'Email', [
+            'sortable'   => true,
+            'filterable' => true,
+        ]);
+
+        $grid->addColumn('role_name', 'Role', [
+            'sortable'       => true,
+            'filterable'     => true,
+            'filter_type'    => 'select',
+            'filter_options' => $roleOptions,
+            'formatter'      => function($val, $u) {
+                $badgeClass = !empty($u['is_super']) ? 'badge-primary' : '';
+                return '<span class="badge ' . $badgeClass . '">' . htmlspecialchars((string)$val, ENT_QUOTES, 'UTF-8') . '</span>';
+            },
+        ]);
+
+        $grid->addColumn('is_active', 'Status', [
+            'sortable'       => true,
+            'filterable'     => true,
+            'filter_type'    => 'select',
+            'filter_options' => ['1' => 'Active', '0' => 'Inactive'],
+            'formatter'      => function($val) {
+                return !empty($val)
+                    ? '<span class="badge badge-success">Active</span>'
+                    : '<span class="badge badge-danger">Inactive</span>';
+            },
+        ]);
+
+        $grid->addColumn('last_login', 'Last Login', [
+            'sortable'   => true,
+            'filterable' => false,
+            'formatter'  => fn($val) => !empty($val) 
+                ? '<span class="text-muted text-sm">' . htmlspecialchars((string)$val, ENT_QUOTES, 'UTF-8') . '</span>' 
+                : '<span class="text-muted text-sm">Never</span>',
+        ]);
+
+        $grid->addColumn('actions', 'Actions', [
+            'sortable'   => false,
+            'filterable' => false,
+            'align'      => 'right',
+            'cell_class' => 'actions-cell',
+            'formatter'  => function($val, $u) {
+                ob_start();
+                ?>
+                <a href="/users?action=edit&id=<?= (int)$u['id'] ?>" class="btn btn-outline btn-xs">Edit</a>
+                <form method="POST" action="/users" class="inline-form">
+                    <input type="hidden" name="action" value="toggle_status">
+                    <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
+                    <?php if (!empty($u['is_active'])): ?>
+                        <button type="submit" class="btn btn-outline btn-xs btn-warn" title="Deactivate User">Deactivate</button>
+                    <?php else: ?>
+                        <button type="submit" class="btn btn-outline btn-xs btn-success" title="Activate User">Activate</button>
+                    <?php endif; ?>
+                </form>
+                <form method="POST" action="/users" class="inline-form" onsubmit="return confirm('Are you sure you want to permanently delete user <?= htmlspecialchars($u['username'], ENT_QUOTES, 'UTF-8') ?>?');">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="id" value="<?= (int)$u['id'] ?>">
+                    <button type="submit" class="btn btn-outline btn-xs btn-danger">Delete</button>
+                </form>
+                <?php
+                return (string) ob_get_clean();
+            }
+        ]);
+
+        $grid->setData($users);
+        $grid->process();
+
         require dirname(__DIR__) . '/views/users.php';
     }
 }

@@ -29,6 +29,14 @@ require __DIR__ . '/layout/header.php';
                                 <span class="text-muted text-sm">Manage roles and configure PC/other device screen permissions.</span>
                             </a>
                         <?php endif; ?>
+
+                        <?php if (!empty($canAccessBrands)): ?>
+                            <a href="/brands" class="info-item" style="text-decoration: none; color: inherit; transition: border-color 0.15s ease;">
+                                <span class="info-label" style="color: var(--color-primary);">Screen &bull; Catalog</span>
+                                <span class="info-value" style="font-size: 1.1rem; font-weight: 600;">Brands &rarr;</span>
+                                <span class="text-muted text-sm">Manage car brands, descriptions, and brand logos.</span>
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endif; ?>

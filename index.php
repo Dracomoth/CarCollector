@@ -99,11 +99,17 @@ switch ($path) {
         RolesController::handle();
         break;
 
+    case '/brands':
+        require_once __DIR__ . '/source/controllers/BrandsController.php';
+        BrandsController::handle();
+        break;
+
     case '/':
         require_once __DIR__ . '/source/services/PermissionService.php';
         $user = $_SESSION['user'] ?? null;
         $canAccessUsers = $user ? PermissionService::canAccess($user, 'users') : false;
         $canAccessRoles = $user ? PermissionService::canAccess($user, 'roles') : false;
+        $canAccessBrands = $user ? PermissionService::canAccess($user, 'brands') : false;
         require __DIR__ . '/source/views/home.php';
         break;
 

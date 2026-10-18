@@ -133,82 +133,11 @@ require __DIR__ . '/layout/header.php';
         <?php endif; ?>
 
         <!-- =============================================================== -->
-        <!-- Users Data Grid -->
+        <!-- Users Data Grid (Filtering, Sorting, Pagination, Per-Page) -->
         <!-- =============================================================== -->
-        <div class="card grid-card">
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Full Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Last Login</th>
-                            <th class="text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (empty($users)): ?>
-                            <tr>
-                                <td colspan="7" class="text-center text-muted">No users found.</td>
-                            </tr>
-                        <?php else: ?>
-                            <?php foreach ($users as $user): ?>
-                                <tr>
-                                    <td>
-                                        <strong><?= htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') ?></strong>
-                                    </td>
-                                    <td><?= htmlspecialchars(trim($user['first_name'] . ' ' . $user['last_name']), ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td><?= htmlspecialchars($user['email'], ENT_QUOTES, 'UTF-8') ?></td>
-                                    <td>
-                                        <span class="badge <?= !empty($user['is_super']) ? 'badge-primary' : '' ?>">
-                                            <?= htmlspecialchars($user['role_name'], ENT_QUOTES, 'UTF-8') ?>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <?php if (!empty($user['is_active'])): ?>
-                                            <span class="badge badge-success">Active</span>
-                                        <?php else: ?>
-                                            <span class="badge badge-danger">Inactive</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td class="text-muted text-sm">
-                                        <?= !empty($user['last_login']) ? htmlspecialchars($user['last_login'], ENT_QUOTES, 'UTF-8') : 'Never' ?>
-                                    </td>
-                                    <td class="text-right actions-cell">
-                                        <!-- Edit Action -->
-                                        <a href="/users?action=edit&id=<?= (int) $user['id'] ?>" class="btn btn-outline btn-xs">Edit</a>
-
-                                        <!-- Toggle Status Action -->
-                                        <form method="POST" action="/users" class="inline-form">
-                                            <input type="hidden" name="action" value="toggle_status">
-                                            <input type="hidden" name="id" value="<?= (int) $user['id'] ?>">
-                                            <?php if (!empty($user['is_active'])): ?>
-                                                <button type="submit" class="btn btn-outline btn-xs btn-warn" 
-                                                        title="Deactivate User">Deactivate</button>
-                                            <?php else: ?>
-                                                <button type="submit" class="btn btn-outline btn-xs btn-success" 
-                                                        title="Activate User">Activate</button>
-                                            <?php endif; ?>
-                                        </form>
-
-                                        <!-- Delete Action -->
-                                        <form method="POST" action="/users" class="inline-form" 
-                                              onsubmit="return confirm('Are you sure you want to permanently delete user <?= htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') ?>?');">
-                                            <input type="hidden" name="action" value="delete">
-                                            <input type="hidden" name="id" value="<?= (int) $user['id'] ?>">
-                                            <button type="submit" class="btn btn-outline btn-xs btn-danger">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <?php if (!empty($grid)): ?>
+            <?= $grid->render() ?>
+        <?php endif; ?>
     </main>
 <?php
 require __DIR__ . '/layout/footer.php';

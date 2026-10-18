@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `brands` (
 
 -- Register Brands Screen under Catalog group
 INSERT INTO `screens` (`screen_key`, `name`, `category`, `sort_order`, `grouped`) VALUES
-    ('brands', 'Brands', 'Catalog', 10, 1)
+    ('brands', 'Brands', 'Catalog', 40, 1)
 ON DUPLICATE KEY UPDATE
     `name` = VALUES(`name`),
     `category` = VALUES(`category`),

@@ -2334,7 +2334,8 @@ body.sidebar-active {
 }
 
 /* Fixed Higher Description Textbox (cannot be resized, stays fixed) */
-#brand-description {
+#brand-description,
+#maker-description {
     height: 95px;
     min-height: 95px;
     max-height: 95px;

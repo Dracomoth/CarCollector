@@ -99,6 +99,12 @@ switch ($path) {
         RolesController::handle();
         break;
 
+    case '/makers':
+    case '/makers.php':
+        require_once __DIR__ . '/source/controllers/MakersController.php';
+        MakersController::handle();
+        break;
+
     case '/brands':
     case '/brands.php':
         require_once __DIR__ . '/source/controllers/BrandsController.php';
@@ -128,6 +134,7 @@ switch ($path) {
         $user = $_SESSION['user'] ?? null;
         $canAccessUsers = $user ? PermissionService::canAccess($user, 'users') : false;
         $canAccessRoles = $user ? PermissionService::canAccess($user, 'roles') : false;
+        $canAccessMakers = $user ? PermissionService::canAccess($user, 'makers') : false;
         $canAccessBrands = $user ? PermissionService::canAccess($user, 'brands') : false;
         $canAccessScales = $user ? PermissionService::canAccess($user, 'scales') : false;
         $canAccessConditions = $user ? PermissionService::canAccess($user, 'conditions') : false;

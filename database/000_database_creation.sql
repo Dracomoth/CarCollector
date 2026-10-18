@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `screens` (
     `name` VARCHAR(100) NOT NULL,
     `category` VARCHAR(50) NOT NULL DEFAULT 'General',
     `sort_order` INT NOT NULL DEFAULT 0,
+    `grouped` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Flag: 1 = grouped screen, 0 = standalone',
     `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `modified` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -97,13 +98,14 @@ ON DUPLICATE KEY UPDATE
 -- -----------------------------------------------------------------------------
 -- Seed Initial Screens (Users and Roles Management)
 -- -----------------------------------------------------------------------------
-INSERT INTO `screens` (`screen_key`, `name`, `category`, `sort_order`) VALUES
-    ('users', 'Users', 'Security', 10),
-    ('roles', 'Roles', 'Security', 20)
+INSERT INTO `screens` (`screen_key`, `name`, `category`, `sort_order`, `grouped`) VALUES
+    ('users', 'Users', 'Security', 10, 1),
+    ('roles', 'Roles', 'Security', 20, 1)
 ON DUPLICATE KEY UPDATE
     `name` = VALUES(`name`),
     `category` = VALUES(`category`),
     `sort_order` = VALUES(`sort_order`),
+    `grouped` = VALUES(`grouped`),
     `modified` = CURRENT_TIMESTAMP;
 
 -- -----------------------------------------------------------------------------

@@ -97,7 +97,7 @@ if (!function_exists('renderScreenIcon')) {
                 return '<svg class="sidebar-link-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"></path><path d="M7 3h10a2 2 0 0 1 2 2v1H5V5a2 2 0 0 1 2-2Z"></path><circle cx="8" cy="11" r="1.5"></circle><path d="m21 16-5-5-5 5"></path></svg>';
             case 'dashboard':
             case 'home':
-                return '<svg class="sidebar-link-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>';
+                return '<svg class="sidebar-link-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>';
             default:
                 return '<svg class="sidebar-link-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"></circle><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path></svg>';
         }
@@ -245,24 +245,12 @@ if (!function_exists('renderScreenIcon')) {
 
         <!-- Sidebar Navigation Content -->
         <div class="sidebar-content">
-            <!-- Dashboard Primary Link -->
-            <div class="sidebar-section">
-                <a href="/" class="sidebar-nav-link <?= $currentPath === '/' ? 'active' : '' ?>">
-                    <span class="sidebar-icon-box">
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="14" width="7" height="7"></rect>
-                            <rect x="3" y="14" width="7" height="7"></rect>
-                        </svg>
-                    </span>
-                    <span class="sidebar-nav-text">Dashboard</span>
-                </a>
-            </div>
-
             <!-- Dynamic Screens Navigation with category separators and grouped logic -->
-            <?php foreach ($categories as $catName => $catData): ?>
-                <div class="sidebar-separator" role="separator"></div>
+            <?php $firstCategory = true; foreach ($categories as $catName => $catData): ?>
+                <?php if (!$firstCategory): ?>
+                    <div class="sidebar-separator" role="separator"></div>
+                <?php endif; ?>
+                <?php $firstCategory = false; ?>
                 <div class="sidebar-section">
                     <!-- Ungrouped Screens (displayed at section level without category heading) -->
                     <?php if (!empty($catData['ungrouped_items'])): ?>
@@ -270,7 +258,7 @@ if (!function_exists('renderScreenIcon')) {
                             <?php foreach ($catData['ungrouped_items'] as $item): ?>
                                 <?php 
                                 $href = ($item['screen_key'] === 'home' || $item['screen_key'] === 'dashboard') ? '/' : '/' . ltrim($item['screen_key'], '/');
-                                $isActive = ($currentPath === $href);
+                                $isActive = ($currentPath === $href || ($href === '/' && ($currentPath === '/dashboard' || $currentPath === '/dashboard.php')));
                                 ?>
                                 <a href="<?= htmlspecialchars($href) ?>" class="sidebar-nav-link <?= $isActive ? 'active' : '' ?>">
                                     <span class="sidebar-icon-box"><?= renderScreenIcon($item['screen_key']) ?></span>

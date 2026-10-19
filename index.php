@@ -213,22 +213,10 @@ switch ($path) {
         break;
 
     case '/':
-        require_once __DIR__ . '/source/services/PermissionService.php';
-        $user = $_SESSION['user'] ?? null;
-        $canAccessGarage = $user ? PermissionService::canAccess($user, 'garage') : false;
-        $canAccessBrandsGallery = $user ? PermissionService::canAccess($user, 'brands_gallery') : false;
-        $canAccessMakersGallery = $user ? PermissionService::canAccess($user, 'makers_gallery') : false;
-        $canAccessCollectionsGallery = $user ? PermissionService::canAccess($user, 'collections_gallery') : false;
-        $canAccessUsers = $user ? PermissionService::canAccess($user, 'users') : false;
-        $canAccessRoles = $user ? PermissionService::canAccess($user, 'roles') : false;
-        $canAccessModels = $user ? PermissionService::canAccess($user, 'models') : false;
-        $canAccessCollections = $user ? PermissionService::canAccess($user, 'collections') : false;
-        $canAccessMakers = $user ? PermissionService::canAccess($user, 'makers') : false;
-        $canAccessBrands = $user ? PermissionService::canAccess($user, 'brands') : false;
-        $canAccessScales = $user ? PermissionService::canAccess($user, 'scales') : false;
-        $canAccessConditions = $user ? PermissionService::canAccess($user, 'conditions') : false;
-        $canAccessColors = $user ? PermissionService::canAccess($user, 'colors') : false;
-        require __DIR__ . '/source/views/home.php';
+    case '/dashboard':
+    case '/dashboard.php':
+        require_once __DIR__ . '/source/controllers/DashboardController.php';
+        DashboardController::handle();
         break;
 
     default:

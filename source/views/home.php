@@ -9,7 +9,7 @@ require __DIR__ . '/layout/header.php';
             <p class="text-muted">You have successfully authenticated. This area is protected by the authentication guard.</p>
 
             <!-- Screens Navigation Section -->
-            <?php if (!empty($canAccessUsers) || !empty($canAccessRoles) || !empty($canAccessModels) || !empty($canAccessMakers) || !empty($canAccessBrands) || !empty($canAccessScales) || !empty($canAccessConditions) || !empty($canAccessColors)): ?>
+            <?php if (!empty($canAccessUsers) || !empty($canAccessRoles) || !empty($canAccessModels) || !empty($canAccessCollections) || !empty($canAccessMakers) || !empty($canAccessBrands) || !empty($canAccessScales) || !empty($canAccessConditions) || !empty($canAccessColors)): ?>
                 <div class="section">
                     <h2>Accessible Screens</h2>
                     <p class="text-muted" style="margin-bottom: 1rem;">Modules available based on your assigned role permissions:</p>
@@ -19,6 +19,14 @@ require __DIR__ . '/layout/header.php';
                                 <span class="info-label" style="color: var(--color-primary);">Screen &bull; Collection</span>
                                 <span class="info-value" style="font-size: 1.1rem; font-weight: 600;">Models Collection &rarr;</span>
                                 <span class="text-muted text-sm">Enter and catalog your personal diecasts, scales, series, and photos.</span>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if (!empty($canAccessCollections)): ?>
+                            <a href="/collections" class="info-item" style="text-decoration: none; color: inherit; transition: border-color 0.15s ease;">
+                                <span class="info-label" style="color: var(--color-primary);">Screen &bull; Collection</span>
+                                <span class="info-value" style="font-size: 1.1rem; font-weight: 600;">Custom Collections &rarr;</span>
+                                <span class="text-muted text-sm">Curate custom theme showcases, sets, and model groupings.</span>
                             </a>
                         <?php endif; ?>
 

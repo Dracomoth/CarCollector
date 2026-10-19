@@ -152,6 +152,12 @@ switch ($path) {
         ModelsController::handle();
         break;
 
+    case '/collections':
+    case '/collections.php':
+        require_once __DIR__ . '/source/controllers/CollectionsController.php';
+        CollectionsController::handle();
+        break;
+
     case '/makers':
     case '/makers.php':
         require_once __DIR__ . '/source/controllers/MakersController.php';
@@ -188,6 +194,7 @@ switch ($path) {
         $canAccessUsers = $user ? PermissionService::canAccess($user, 'users') : false;
         $canAccessRoles = $user ? PermissionService::canAccess($user, 'roles') : false;
         $canAccessModels = $user ? PermissionService::canAccess($user, 'models') : false;
+        $canAccessCollections = $user ? PermissionService::canAccess($user, 'collections') : false;
         $canAccessMakers = $user ? PermissionService::canAccess($user, 'makers') : false;
         $canAccessBrands = $user ? PermissionService::canAccess($user, 'brands') : false;
         $canAccessScales = $user ? PermissionService::canAccess($user, 'scales') : false;

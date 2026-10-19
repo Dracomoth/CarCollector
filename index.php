@@ -200,11 +200,25 @@ switch ($path) {
         BrandsGalleryController::handle();
         break;
 
+    case '/makers_gallery':
+    case '/makers_gallery.php':
+        require_once __DIR__ . '/source/controllers/MakersGalleryController.php';
+        MakersGalleryController::handle();
+        break;
+
+    case '/collections_gallery':
+    case '/collections_gallery.php':
+        require_once __DIR__ . '/source/controllers/CollectionsGalleryController.php';
+        CollectionsGalleryController::handle();
+        break;
+
     case '/':
         require_once __DIR__ . '/source/services/PermissionService.php';
         $user = $_SESSION['user'] ?? null;
         $canAccessGarage = $user ? PermissionService::canAccess($user, 'garage') : false;
         $canAccessBrandsGallery = $user ? PermissionService::canAccess($user, 'brands_gallery') : false;
+        $canAccessMakersGallery = $user ? PermissionService::canAccess($user, 'makers_gallery') : false;
+        $canAccessCollectionsGallery = $user ? PermissionService::canAccess($user, 'collections_gallery') : false;
         $canAccessUsers = $user ? PermissionService::canAccess($user, 'users') : false;
         $canAccessRoles = $user ? PermissionService::canAccess($user, 'roles') : false;
         $canAccessModels = $user ? PermissionService::canAccess($user, 'models') : false;

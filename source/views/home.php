@@ -30,6 +30,22 @@ require __DIR__ . '/layout/header.php';
                             </a>
                         <?php endif; ?>
 
+                        <?php if (!empty($canAccessMakersGallery)): ?>
+                            <a href="/makers_gallery" class="info-item" style="text-decoration: none; color: inherit; transition: border-color 0.15s ease;">
+                                <span class="info-label" style="color: var(--color-primary);">Screen &bull; Gallery</span>
+                                <span class="info-value" style="font-size: 1.1rem; font-weight: 600;">Makers Gallery &rarr;</span>
+                                <span class="text-muted text-sm">Browse model car manufacturers, maker logos, model counts, and manufacturer notes.</span>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if (!empty($canAccessCollectionsGallery)): ?>
+                            <a href="/collections_gallery" class="info-item" style="text-decoration: none; color: inherit; transition: border-color 0.15s ease;">
+                                <span class="info-label" style="color: var(--color-primary);">Screen &bull; Gallery</span>
+                                <span class="info-value" style="font-size: 1.1rem; font-weight: 600;">Collections Gallery &rarr;</span>
+                                <span class="text-muted text-sm">Browse custom themed sets, series showcases, model counts, and curation notes.</span>
+                            </a>
+                        <?php endif; ?>
+
                         <?php if (!empty($canAccessModels)): ?>
                             <a href="/models" class="info-item" style="text-decoration: none; color: inherit; transition: border-color 0.15s ease;">
                                 <span class="info-label" style="color: var(--color-primary);">Screen &bull; Collection</span>

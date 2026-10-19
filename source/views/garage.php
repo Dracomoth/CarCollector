@@ -233,18 +233,24 @@ $filterOptionsJson = json_encode($filterOptions, JSON_HEX_TAG | JSON_HEX_APOS | 
                             <a href="#" class="clean-logo-item clean-logo-link" id="detail-brand-logo-wrap" style="display: none;" title="View brand in Brands Gallery">
                                 <img src="" alt="" id="detail-brand-logo" class="clean-logo-img">
                             </a>
-                            <div class="clean-logo-item" id="detail-maker-logo-wrap" style="display: none;" title="Maker">
+                            <a href="#" class="clean-logo-item clean-logo-link" id="detail-maker-logo-wrap" style="display: none;" title="View maker in Makers Gallery">
                                 <img src="" alt="" id="detail-maker-logo" class="clean-logo-img">
-                            </div>
+                            </a>
                         </div>
 
                         <!-- Clean Linear Car Information (No group boxes, no subtitles) -->
                         <div class="garage-specs-grid">
                             <div class="spec-cell">
                                 <span class="spec-label">Brand</span>
-                                <span class="spec-value font-semibold">
-                                    <a href="#" id="detail-brand-name-grid" class="garage-brand-nav-link" title="View brand in Brands Gallery">—</a>
-                                </span>
+                                <div class="spec-value font-semibold">
+                                    <a href="#" id="detail-brand-name-grid" class="garage-brand-nav-link" title="View brand in Brands Gallery">
+                                        <span id="detail-brand-name-text">—</span>
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="garage-nav-arrow-icon" id="detail-brand-arrow-icon">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            <polyline points="12 5 19 12 12 19"></polyline>
+                                        </svg>
+                                    </a>
+                                </div>
                             </div>
                             <div class="spec-cell">
                                 <span class="spec-label">Year</span>
@@ -264,7 +270,15 @@ $filterOptionsJson = json_encode($filterOptions, JSON_HEX_TAG | JSON_HEX_APOS | 
                             </div>
                             <div class="spec-cell" id="detail-maker-spec-cell">
                                 <span class="spec-label">Maker</span>
-                                <span class="spec-value font-semibold" id="detail-maker-name-grid">—</span>
+                                <div class="spec-value font-semibold">
+                                    <a href="#" id="detail-maker-name-grid" class="garage-maker-nav-link" title="View maker in Makers Gallery">
+                                        <span id="detail-maker-name-text">—</span>
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="garage-nav-arrow-icon" id="detail-maker-arrow-icon">
+                                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                                            <polyline points="12 5 19 12 12 19"></polyline>
+                                        </svg>
+                                    </a>
+                                </div>
                             </div>
                             <div class="spec-cell" id="detail-car-year-spec-cell">
                                 <span class="spec-label">Car Year</span>
@@ -405,8 +419,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailMakerLogo = document.getElementById('detail-maker-logo');
 
     const detailBrandNameGrid = document.getElementById('detail-brand-name-grid');
+    const detailBrandNameText = document.getElementById('detail-brand-name-text');
+    const detailBrandArrowIcon = document.getElementById('detail-brand-arrow-icon');
     const detailMakerSpecCell = document.getElementById('detail-maker-spec-cell');
     const detailMakerNameGrid = document.getElementById('detail-maker-name-grid');
+    const detailMakerNameText = document.getElementById('detail-maker-name-text');
+    const detailMakerArrowIcon = document.getElementById('detail-maker-arrow-icon');
     const detailCarYearSpecCell = document.getElementById('detail-car-year-spec-cell');
 
     const detailToyYear = document.getElementById('detail-toy-year');
@@ -696,7 +714,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (makerName && model.maker_logo_path) {
             detailMakerLogo.src = model.maker_logo_path;
             detailMakerLogo.alt = makerName + ' Logo';
-            detailMakerLogoWrap.title = makerName;
+            detailMakerLogoWrap.title = 'View ' + makerName + ' in Makers Gallery';
+            if (model.maker_id) {
+                detailMakerLogoWrap.href = '/makers_gallery.php?id=' + encodeURIComponent(model.maker_id);
+            } else {
+                detailMakerLogoWrap.removeAttribute('href');
+            }
             detailMakerLogoWrap.style.display = 'inline-flex';
             hasAnyLogo = true;
         } else {
@@ -708,22 +731,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 2. Specifications & Information (Listed cleanly next to car, no groupboxes, no subtitles)
-        detailBrandNameGrid.textContent = model.brand_name || '—';
+        if (detailBrandNameText) {
+            detailBrandNameText.textContent = model.brand_name || '—';
+        } else {
+            detailBrandNameGrid.textContent = model.brand_name || '—';
+        }
         if (model.brand_id) {
             detailBrandNameGrid.href = '/brands_gallery.php?id=' + encodeURIComponent(model.brand_id);
             detailBrandNameGrid.title = 'View ' + (model.brand_name || 'Brand') + ' in Brands Gallery';
             detailBrandNameGrid.classList.add('is-clickable');
+            if (detailBrandArrowIcon) detailBrandArrowIcon.style.display = 'inline-block';
         } else {
             detailBrandNameGrid.removeAttribute('href');
             detailBrandNameGrid.title = '';
             detailBrandNameGrid.classList.remove('is-clickable');
+            if (detailBrandArrowIcon) detailBrandArrowIcon.style.display = 'none';
         }
 
         detailToyYear.textContent = model.year || '—';
         detailSeries.textContent = model.series || '—';
         detailSeriesNumber.textContent = model.series_number || '—';
         detailSerialNumber.textContent = model.serial_number || '—';
-        detailMakerNameGrid.textContent = makerName || '—';
+
+        if (detailMakerNameText) {
+            detailMakerNameText.textContent = makerName || '—';
+        } else {
+            detailMakerNameGrid.textContent = makerName || '—';
+        }
+        if (model.maker_id && makerName) {
+            detailMakerNameGrid.href = '/makers_gallery.php?id=' + encodeURIComponent(model.maker_id);
+            detailMakerNameGrid.title = 'View ' + makerName + ' in Makers Gallery';
+            detailMakerNameGrid.classList.add('is-clickable');
+            if (detailMakerArrowIcon) detailMakerArrowIcon.style.display = 'inline-block';
+        } else {
+            detailMakerNameGrid.removeAttribute('href');
+            detailMakerNameGrid.title = '';
+            detailMakerNameGrid.classList.remove('is-clickable');
+            if (detailMakerArrowIcon) detailMakerArrowIcon.style.display = 'none';
+        }
+
         detailCarYear.textContent = model.model_year || '—';
 
         // Color Swatch and Name
@@ -749,10 +795,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (model.collection_names && model.collection_names.trim() !== '') {
             detailCollectionsTags.innerHTML = '';
             const colNames = model.collection_names.split(',').map(s => s.trim()).filter(Boolean);
-            colNames.forEach(colName => {
-                const tag = document.createElement('span');
-                tag.className = 'spec-collection-tag';
+            const colIds = (model.collection_ids || '').split(',').map(s => s.trim()).filter(Boolean);
+            colNames.forEach((colName, idx) => {
+                const colId = colIds[idx] || null;
+                const tag = document.createElement(colId ? 'a' : 'span');
+                tag.className = 'spec-collection-tag' + (colId ? ' is-link' : '');
                 tag.textContent = colName;
+                if (colId) {
+                    tag.href = '/collections_gallery.php?id=' + encodeURIComponent(colId);
+                    tag.title = 'View ' + colName + ' in Collections Gallery';
+                }
                 detailCollectionsTags.appendChild(tag);
             });
             detailCollectionsGroup.style.display = 'block';
@@ -961,6 +1013,48 @@ document.addEventListener('DOMContentLoaded', () => {
             filterBrand.appendChild(newOpt);
             filterBrand.value = brandStr;
             state.filters.brand_id = brandStr;
+        }
+    }
+
+    // Pre-filter by maker if coming from Makers Gallery (e.g. ?maker_id=2 or ?maker=Ferrari)
+    const initialMakerParam = initialUrlParams.get('maker_id') || initialUrlParams.get('maker');
+    if (initialMakerParam) {
+        const makerStr = String(initialMakerParam).trim();
+        let matchedOption = Array.from(filterMaker.options).find(opt => opt.value === makerStr);
+        if (!matchedOption) {
+            matchedOption = Array.from(filterMaker.options).find(opt => opt.text.trim().toLowerCase() === makerStr.toLowerCase());
+        }
+        if (matchedOption && matchedOption.value) {
+            filterMaker.value = matchedOption.value;
+            state.filters.maker_id = matchedOption.value;
+        } else if (makerStr !== '') {
+            const newOpt = document.createElement('option');
+            newOpt.value = makerStr;
+            newOpt.textContent = 'Maker #' + makerStr;
+            filterMaker.appendChild(newOpt);
+            filterMaker.value = makerStr;
+            state.filters.maker_id = makerStr;
+        }
+    }
+
+    // Pre-filter by collection if coming from Collections Gallery (e.g. ?collection_id=1 or ?collection=Hot+Rods)
+    const initialCollectionParam = initialUrlParams.get('collection_id') || initialUrlParams.get('collection');
+    if (initialCollectionParam) {
+        const colStr = String(initialCollectionParam).trim();
+        let matchedOption = Array.from(filterCollection.options).find(opt => opt.value === colStr);
+        if (!matchedOption) {
+            matchedOption = Array.from(filterCollection.options).find(opt => opt.text.trim().toLowerCase() === colStr.toLowerCase());
+        }
+        if (matchedOption && matchedOption.value) {
+            filterCollection.value = matchedOption.value;
+            state.filters.collection_id = matchedOption.value;
+        } else if (colStr !== '') {
+            const newOpt = document.createElement('option');
+            newOpt.value = colStr;
+            newOpt.textContent = 'Collection #' + colStr;
+            filterCollection.appendChild(newOpt);
+            filterCollection.value = colStr;
+            state.filters.collection_id = colStr;
         }
     }
 

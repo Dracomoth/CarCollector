@@ -4473,7 +4473,9 @@ body.sidebar-active {
     justify-content: center;
 }
 
-.brand-card-logo {
+.brand-card-logo,
+.maker-card-logo,
+.collection-card-logo {
     max-height: 80px;
     max-width: 80%;
     width: auto;
@@ -4483,23 +4485,31 @@ body.sidebar-active {
     transition: transform 0.3s ease;
 }
 
-.brand-card:hover .brand-card-logo {
+.brand-card:hover .brand-card-logo,
+.maker-card:hover .maker-card-logo,
+.brand-card:hover .collection-card-logo {
     transform: scale(1.06);
 }
 
-.brand-card-title {
+.brand-card-title,
+.maker-card-title,
+.collection-card-title {
     font-size: 1.15rem;
     font-weight: 700;
 }
 
-/* Brands Detail View */
-.brand-detail-body {
+/* Brands, Makers & Collections Detail View */
+.brand-detail-body,
+.maker-detail-body,
+.collection-detail-body {
     grid-template-columns: minmax(220px, 300px) 1fr;
     gap: 2.5rem;
     align-items: center;
 }
 
-.brand-detail-logo-box {
+.brand-detail-logo-box,
+.maker-detail-logo-box,
+.collection-detail-logo-box {
     aspect-ratio: 16 / 10;
     max-height: 210px;
     padding: 1.25rem 1.5rem;
@@ -4512,7 +4522,9 @@ body.sidebar-active {
     box-shadow: var(--shadow-sm);
 }
 
-.brand-detail-logo-img {
+.brand-detail-logo-img,
+.maker-detail-logo-img,
+.collection-detail-logo-img {
     max-height: 120px;
     max-width: 85%;
     width: auto;
@@ -4521,13 +4533,17 @@ body.sidebar-active {
     filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
 }
 
-.brand-specs-grid {
+.brand-specs-grid,
+.maker-specs-grid,
+.collection-specs-grid {
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     gap: 1.25rem 2rem;
 }
 
-/* Your Models interactive link in Brands Detail */
-.brand-models-nav-link {
+/* Your Models interactive link in Brands, Makers & Collections Detail */
+.brand-models-nav-link,
+.maker-models-nav-link,
+.collection-models-nav-link {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -4540,30 +4556,77 @@ body.sidebar-active {
     transition: color 0.15s ease;
 }
 
-.brand-models-nav-link:hover {
+.brand-models-nav-link:hover,
+.maker-models-nav-link:hover,
+.collection-models-nav-link:hover {
     color: var(--color-primary-hover, #ff4d4d);
 }
 
-.brand-models-arrow-icon {
+.brand-models-arrow-icon,
+.maker-models-arrow-icon,
+.collection-models-arrow-icon {
     transition: transform 0.15s ease;
     flex-shrink: 0;
 }
 
-.brand-models-nav-link:hover .brand-models-arrow-icon {
+.brand-models-nav-link:hover .brand-models-arrow-icon,
+.maker-models-nav-link:hover .maker-models-arrow-icon,
+.collection-models-nav-link:hover .collection-models-arrow-icon {
     transform: translateX(3px);
 }
 
-/* Garage cross-navigation link */
-.garage-brand-nav-link {
-    color: #ffffff;
+/* Interactive collection tags in Garage detail mode */
+.spec-collection-tag.is-link {
+    cursor: pointer;
     text-decoration: none;
-    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+    transition: all 0.15s ease;
 }
 
-.garage-brand-nav-link:hover {
+.spec-collection-tag.is-link:hover {
+    border-color: var(--color-primary);
     color: var(--color-primary);
+    background: rgba(225, 6, 0, 0.12);
+}
+
+/* Garage cross-navigation link */
+.garage-brand-nav-link,
+.garage-maker-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--color-primary);
+    font-weight: 600;
     text-decoration: underline;
     text-underline-offset: 3px;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.garage-brand-nav-link:hover,
+.garage-maker-nav-link:hover {
+    color: var(--color-primary-hover, #ff4d4d);
+}
+
+.garage-nav-arrow-icon {
+    transition: transform 0.15s ease;
+    flex-shrink: 0;
+}
+
+.garage-brand-nav-link:hover .garage-nav-arrow-icon,
+.garage-maker-nav-link:hover .garage-nav-arrow-icon {
+    transform: translateX(3px);
+}
+
+.garage-brand-nav-link:not([href]),
+.garage-maker-nav-link:not([href]) {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    cursor: default;
+}
+
+.garage-brand-nav-link:not([href]) .garage-nav-arrow-icon,
+.garage-maker-nav-link:not([href]) .garage-nav-arrow-icon {
+    display: none !important;
 }
 
 .clean-logo-link {

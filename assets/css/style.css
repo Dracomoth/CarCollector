@@ -4447,5 +4447,134 @@ body.sidebar-active {
     .garage-alphabet-wrapper {
         top: 56px;
     }
+
+    .brands-gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
+    }
 }
+
+/* =============================================================================
+   Brands Gallery Styles & Cross-Navigation
+   ============================================================================= */
+.brands-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.brand-card-logo-box {
+    aspect-ratio: 16 / 10;
+    padding: 1.25rem;
+    background: #090c12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-card-logo {
+    max-height: 80px;
+    max-width: 80%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+    transition: transform 0.3s ease;
+}
+
+.brand-card:hover .brand-card-logo {
+    transform: scale(1.06);
+}
+
+.brand-card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+/* Brands Detail View */
+.brand-detail-body {
+    grid-template-columns: minmax(220px, 300px) 1fr;
+    gap: 2.5rem;
+    align-items: center;
+}
+
+.brand-detail-logo-box {
+    aspect-ratio: 16 / 10;
+    max-height: 210px;
+    padding: 1.25rem 1.5rem;
+    background: #090c12;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.brand-detail-logo-img {
+    max-height: 120px;
+    max-width: 85%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
+}
+
+.brand-specs-grid {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1.25rem 2rem;
+}
+
+/* Your Models interactive link in Brands Detail */
+.brand-models-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-primary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.brand-models-nav-link:hover {
+    color: var(--color-primary-hover, #ff4d4d);
+}
+
+.brand-models-arrow-icon {
+    transition: transform 0.15s ease;
+    flex-shrink: 0;
+}
+
+.brand-models-nav-link:hover .brand-models-arrow-icon {
+    transform: translateX(3px);
+}
+
+/* Garage cross-navigation link */
+.garage-brand-nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.garage-brand-nav-link:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.clean-logo-link {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.clean-logo-link:hover {
+    border-color: rgba(225, 6, 0, 0.6);
+    box-shadow: 0 4px 14px rgba(225, 6, 0, 0.35);
+    transform: translateY(-2px);
+}
+
 

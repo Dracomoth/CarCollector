@@ -165,22 +165,12 @@ class GarageRepository {
         }
 
         try {
-            // Brands represented in user's cars
-            $stmt = $pdo->prepare("SELECT DISTINCT b.id, b.name 
-                                   FROM `brands` b 
-                                   JOIN `models` m ON m.brand_id = b.id 
-                                   WHERE m.user_id = :user_id 
-                                   ORDER BY b.name ASC");
-            $stmt->execute(['user_id' => $userId]);
+            // All catalog brands so user can filter by any registered brand (even with 0 models)
+            $stmt = $pdo->query("SELECT id, name FROM `brands` ORDER BY name ASC");
             $brands = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
-            // Makers represented in user's cars
-            $stmt = $pdo->prepare("SELECT DISTINCT mk.id, mk.name 
-                                   FROM `makers` mk 
-                                   JOIN `models` m ON m.maker_id = mk.id 
-                                   WHERE m.user_id = :user_id 
-                                   ORDER BY mk.name ASC");
-            $stmt->execute(['user_id' => $userId]);
+            // All catalog makers
+            $stmt = $pdo->query("SELECT id, name FROM `makers` ORDER BY name ASC");
             $makers = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
             // Custom Collections belonging to user
@@ -188,13 +178,8 @@ class GarageRepository {
             $stmt->execute(['user_id' => $userId]);
             $collections = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
-            // Scales represented in user's cars
-            $stmt = $pdo->prepare("SELECT DISTINCT s.id, s.scale AS name 
-                                   FROM `scales` s 
-                                   JOIN `models` m ON m.scale_id = s.id 
-                                   WHERE m.user_id = :user_id 
-                                   ORDER BY s.scale ASC");
-            $stmt->execute(['user_id' => $userId]);
+            // All catalog scales
+            $stmt = $pdo->query("SELECT id, scale AS name FROM `scales` ORDER BY scale ASC");
             $scales = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
 
             return [

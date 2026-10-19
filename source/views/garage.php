@@ -230,9 +230,9 @@ $filterOptionsJson = json_encode($filterOptions, JSON_HEX_TAG | JSON_HEX_APOS | 
                     <div class="garage-detail-specs-col">
                         <!-- Clean Pure Logos Strip (smaller, above all info, NO text on them) -->
                         <div class="garage-detail-logos-strip" id="detail-logos-strip" style="display: none;">
-                            <div class="clean-logo-item" id="detail-brand-logo-wrap" style="display: none;" title="Brand">
+                            <a href="#" class="clean-logo-item clean-logo-link" id="detail-brand-logo-wrap" style="display: none;" title="View brand in Brands Gallery">
                                 <img src="" alt="" id="detail-brand-logo" class="clean-logo-img">
-                            </div>
+                            </a>
                             <div class="clean-logo-item" id="detail-maker-logo-wrap" style="display: none;" title="Maker">
                                 <img src="" alt="" id="detail-maker-logo" class="clean-logo-img">
                             </div>
@@ -242,7 +242,9 @@ $filterOptionsJson = json_encode($filterOptions, JSON_HEX_TAG | JSON_HEX_APOS | 
                         <div class="garage-specs-grid">
                             <div class="spec-cell">
                                 <span class="spec-label">Brand</span>
-                                <span class="spec-value font-semibold" id="detail-brand-name-grid">—</span>
+                                <span class="spec-value font-semibold">
+                                    <a href="#" id="detail-brand-name-grid" class="garage-brand-nav-link" title="View brand in Brands Gallery">—</a>
+                                </span>
                             </div>
                             <div class="spec-cell">
                                 <span class="spec-label">Year</span>
@@ -678,7 +680,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (model.brand_logo_path) {
             detailBrandLogo.src = model.brand_logo_path;
             detailBrandLogo.alt = (model.brand_name || 'Brand') + ' Logo';
-            detailBrandLogoWrap.title = model.brand_name || 'Brand';
+            detailBrandLogoWrap.title = 'View ' + (model.brand_name || 'Brand') + ' in Brands Gallery';
+            if (model.brand_id) {
+                detailBrandLogoWrap.href = '/brands_gallery.php?id=' + encodeURIComponent(model.brand_id);
+            } else {
+                detailBrandLogoWrap.removeAttribute('href');
+            }
             detailBrandLogoWrap.style.display = 'inline-flex';
             hasAnyLogo = true;
         } else {
@@ -702,6 +709,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 2. Specifications & Information (Listed cleanly next to car, no groupboxes, no subtitles)
         detailBrandNameGrid.textContent = model.brand_name || '—';
+        if (model.brand_id) {
+            detailBrandNameGrid.href = '/brands_gallery.php?id=' + encodeURIComponent(model.brand_id);
+            detailBrandNameGrid.title = 'View ' + (model.brand_name || 'Brand') + ' in Brands Gallery';
+            detailBrandNameGrid.classList.add('is-clickable');
+        } else {
+            detailBrandNameGrid.removeAttribute('href');
+            detailBrandNameGrid.title = '';
+            detailBrandNameGrid.classList.remove('is-clickable');
+        }
+
         detailToyYear.textContent = model.year || '—';
         detailSeries.textContent = model.series || '—';
         detailSeriesNumber.textContent = model.series_number || '—';
@@ -925,6 +942,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // 9. Initial Load & Deep-Link Check
     const initialUrlParams = new URLSearchParams(window.location.search);
     const initialId = initialUrlParams.get('id');
+
+    // Pre-filter by brand if coming from Brands Gallery (e.g. ?brand_id=3 or ?brand=Hot+Wheels)
+    const initialBrandParam = initialUrlParams.get('brand_id') || initialUrlParams.get('brand');
+    if (initialBrandParam) {
+        const brandStr = String(initialBrandParam).trim();
+        let matchedOption = Array.from(filterBrand.options).find(opt => opt.value === brandStr);
+        if (!matchedOption) {
+            matchedOption = Array.from(filterBrand.options).find(opt => opt.text.trim().toLowerCase() === brandStr.toLowerCase());
+        }
+        if (matchedOption && matchedOption.value) {
+            filterBrand.value = matchedOption.value;
+            state.filters.brand_id = matchedOption.value;
+        } else if (brandStr !== '') {
+            const newOpt = document.createElement('option');
+            newOpt.value = brandStr;
+            newOpt.textContent = 'Brand #' + brandStr;
+            filterBrand.appendChild(newOpt);
+            filterBrand.value = brandStr;
+            state.filters.brand_id = brandStr;
+        }
+    }
 
     updateView();
 

@@ -16,9 +16,17 @@ require __DIR__ . '/layout/header.php';
                     <div class="info-grid">
                         <?php if (!empty($canAccessGarage)): ?>
                             <a href="/garage" class="info-item" style="text-decoration: none; color: inherit; transition: border-color 0.15s ease;">
-                                <span class="info-label" style="color: var(--color-primary);">Screen &bull; Gallery Collection</span>
+                                <span class="info-label" style="color: var(--color-primary);">Screen &bull; Gallery</span>
                                 <span class="info-value" style="font-size: 1.1rem; font-weight: 600;">Garage Showcase &rarr;</span>
                                 <span class="text-muted text-sm">Interactive gallery of your scale car collection with dynamic filters and alphabet index.</span>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if (!empty($canAccessBrandsGallery)): ?>
+                            <a href="/brands_gallery" class="info-item" style="text-decoration: none; color: inherit; transition: border-color 0.15s ease;">
+                                <span class="info-label" style="color: var(--color-primary);">Screen &bull; Gallery</span>
+                                <span class="info-value" style="font-size: 1.1rem; font-weight: 600;">Brands Gallery &rarr;</span>
+                                <span class="text-muted text-sm">Browse catalog diecast brands, brand logos, model counts, and detailed brand notes.</span>
                             </a>
                         <?php endif; ?>
 

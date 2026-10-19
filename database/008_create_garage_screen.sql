@@ -1,11 +1,11 @@
 -- =============================================================================
 -- Migration: 008_create_garage_screen.sql
--- Description: Register Garage screen under 'Gallery Collection' category with sort_order 10,
+-- Description: Register Garage screen under 'Gallery' category with sort_order 10,
 --              grant SuperAdmin permissions, and bump system version to 0.13.0.
 -- =============================================================================
 
 INSERT INTO `screens` (`screen_key`, `name`, `category`, `sort_order`, `grouped`) VALUES
-    ('garage', 'Garage', 'Gallery Collection', 10, 1)
+    ('garage', 'Garage', 'Gallery', 10, 1)
 ON DUPLICATE KEY UPDATE
     `name` = VALUES(`name`),
     `category` = VALUES(`category`),

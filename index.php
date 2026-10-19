@@ -194,10 +194,17 @@ switch ($path) {
         GarageController::handle();
         break;
 
+    case '/brands_gallery':
+    case '/brands_gallery.php':
+        require_once __DIR__ . '/source/controllers/BrandsGalleryController.php';
+        BrandsGalleryController::handle();
+        break;
+
     case '/':
         require_once __DIR__ . '/source/services/PermissionService.php';
         $user = $_SESSION['user'] ?? null;
         $canAccessGarage = $user ? PermissionService::canAccess($user, 'garage') : false;
+        $canAccessBrandsGallery = $user ? PermissionService::canAccess($user, 'brands_gallery') : false;
         $canAccessUsers = $user ? PermissionService::canAccess($user, 'users') : false;
         $canAccessRoles = $user ? PermissionService::canAccess($user, 'roles') : false;
         $canAccessModels = $user ? PermissionService::canAccess($user, 'models') : false;

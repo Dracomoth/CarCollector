@@ -16,6 +16,7 @@ composer.phar
 /logs/
 /tmp/
 /temp/
+/scratch/
 
 # Operating System artifacts
 .DS_Store

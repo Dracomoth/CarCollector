@@ -3604,3 +3604,848 @@ body.sidebar-active {
     font-weight: 700;
     display: block;
 }
+
+/* =========================================================================
+ * Garage Gallery Showcase Styles (garage.php)
+ * ========================================================================= */
+.garage-page {
+    padding-bottom: 3rem;
+}
+
+/* 1. Filter Section (Top) */
+.garage-filter-section {
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.garage-filter-grid {
+    display: grid;
+    grid-template-columns: 2fr repeat(4, 1fr) auto;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.garage-filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.garage-filter-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon .input-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--color-text-dim);
+    pointer-events: none;
+}
+
+.input-with-icon .form-control {
+    padding-left: 36px;
+    padding-right: 32px;
+}
+
+.input-clear-btn {
+    position: absolute;
+    right: 8px;
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: color 0.15s ease;
+}
+
+.input-clear-btn:hover {
+    color: var(--color-primary);
+}
+
+.garage-reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 42px;
+    padding: 0 1rem;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+/* 2. Sticky Alphabet Bar */
+.garage-alphabet-wrapper {
+    position: sticky;
+    top: 64px;
+    z-index: 30;
+    margin-bottom: 1.25rem;
+}
+
+.garage-alphabet-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(14, 18, 26, 0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+}
+
+.garage-alphabet-bar::-webkit-scrollbar {
+    height: 4px;
+}
+
+.garage-alphabet-bar::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 2px;
+}
+
+.alpha-btn {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+    flex-shrink: 0;
+    user-select: none;
+}
+
+.alpha-btn:hover:not(.is-disabled) {
+    background: var(--color-surface-hover);
+    border-color: var(--color-primary);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.alpha-btn.is-active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+    box-shadow: 0 0 12px var(--color-primary-glow);
+}
+
+.alpha-btn.is-disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    background: transparent;
+    border-color: transparent;
+    color: var(--color-text-dim);
+    pointer-events: none;
+}
+
+/* 3. Content Header */
+.garage-content-header {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.garage-header-list-mode,
+.garage-header-detail-mode {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.garage-header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.garage-showing-label {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+}
+
+.garage-showing-letter {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-left: 0.2rem;
+}
+
+.garage-showing-count {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+}
+
+.garage-sort-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.4rem 0.85rem;
+}
+
+/* Breadcrumb in Detail Mode */
+.garage-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.garage-breadcrumb-link {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.15s ease;
+}
+
+.garage-breadcrumb-link:hover {
+    color: var(--color-primary-hover);
+}
+
+.garage-breadcrumb-separator {
+    color: var(--color-text-dim);
+    font-weight: 400;
+}
+
+.garage-breadcrumb-current {
+    color: var(--color-text);
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.garage-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+}
+
+/* 4. List Mode: Cards Grid */
+.garage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1.35rem;
+    margin-bottom: 2rem;
+}
+
+.garage-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+    outline: none;
+}
+
+.garage-card:hover,
+.garage-card:focus-visible {
+    border-color: var(--color-primary);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md), 0 0 16px rgba(225, 6, 0, 0.25);
+}
+
+.garage-card-img-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: #090c12;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--color-border);
+    padding: 0.35rem;
+}
+
+.garage-card-img {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.35s ease;
+}
+
+.garage-card:hover .garage-card-img {
+    transform: scale(1.06);
+}
+
+.garage-card-img-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--color-text-dim);
+    background: #090c12;
+}
+
+.garage-card-scale-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(14, 18, 26, 0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-sm);
+    padding: 2px 7px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.garage-card-info {
+    padding: 0.9rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.garage-card-title {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.garage-card:hover .garage-card-title {
+    color: #ffffff;
+}
+
+.garage-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+}
+
+.garage-card-brand {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.garage-card-bullet {
+    color: var(--color-text-dim);
+}
+
+.garage-card-year {
+    color: var(--color-text-muted);
+}
+
+/* Empty State */
+.garage-empty-state {
+    text-align: center;
+    padding: 4.5rem 1.5rem;
+    background: var(--color-surface);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    margin: 1.5rem 0;
+}
+
+.garage-empty-icon-wrap {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-dim);
+    margin-bottom: 1.25rem;
+}
+
+.garage-empty-title {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+}
+
+.garage-empty-desc {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    max-width: 440px;
+    margin: 0 auto 1.5rem auto;
+}
+
+/* 5. Detail Mode (Showcase) */
+.garage-detail-showcase {
+    position: relative;
+    padding: 1.75rem 2rem 2rem 2rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    display: block;
+}
+
+/* Title Bar (Integrated Header: Model Name Left, Badges Right) */
+.garage-detail-title-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    flex-wrap: wrap;
+}
+
+.garage-detail-model-name {
+    font-family: var(--font-heading);
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.garage-detail-badges {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+.badge-condition {
+    background: rgba(16, 185, 129, 0.16);
+    border: 1px solid rgba(16, 185, 129, 0.45);
+    color: #34d399;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: 9999px;
+    letter-spacing: 0.02em;
+}
+
+.badge-scale {
+    background: rgba(225, 6, 0, 0.16);
+    border: 1px solid rgba(225, 6, 0, 0.45);
+    color: #ff6b6b;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.3rem 0.8rem;
+    border-radius: 9999px;
+    letter-spacing: 0.02em;
+}
+
+/* Main Layout Grid: Photo Column Left, Clean Specs Right */
+.garage-detail-body {
+    display: grid;
+    grid-template-columns: minmax(340px, 460px) 1fr;
+    gap: 2.25rem;
+    align-items: start;
+    margin-bottom: 1.75rem;
+}
+
+/* Photo Showcase Box (Left) */
+.garage-detail-media-col {
+    width: 100%;
+}
+
+.garage-detail-image-box {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background: #090c12;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-cockpit);
+    padding: 0.65rem;
+}
+
+.garage-detail-img {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.garage-detail-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 100%;
+    height: 100%;
+    color: var(--color-text-dim);
+    background: #090c12;
+}
+
+/* Specs Column (Right of Car Image: Logos on Top, Linear Specs Below) */
+.garage-detail-specs-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Clean Pure Logos Strip (smaller, above all info, NO text on them) */
+.garage-detail-logos-strip {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding-bottom: 0.25rem;
+}
+
+.clean-logo-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.75rem;
+    background: #090c12;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    transition: all 0.2s ease;
+}
+
+.clean-logo-item:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.clean-logo-img {
+    height: 28px;
+    max-width: 80px;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+    display: block;
+}
+
+/* Clean Linear Car Information Grid (No groupboxes, no subtitles, no receipt look) */
+.garage-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(130px, 1fr));
+    gap: 1.15rem 1.75rem;
+}
+
+.spec-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.spec-cell-link {
+    grid-column: 1 / -1;
+    margin-top: 0.25rem;
+}
+
+.spec-cell-collections {
+    grid-column: 1 / -1;
+}
+
+.spec-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.spec-value {
+    font-size: 0.95rem;
+    color: var(--color-text);
+    word-break: break-word;
+}
+
+.spec-value.font-semibold {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.spec-value-color {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.color-badge-swatch {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
+}
+
+.garage-ext-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.85rem;
+    color: var(--color-primary);
+    border-color: rgba(225, 6, 0, 0.4);
+}
+
+.garage-ext-link:hover {
+    background: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+}
+
+.spec-collections-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.spec-collection-tag {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.82rem;
+    color: var(--color-text);
+}
+
+/* Notes & Description (Clean Section below main layout) */
+.garage-detail-notes-section {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.garage-notes-title {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-sans);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.85rem;
+}
+
+.garage-notes-title svg {
+    width: 13px;
+    height: 13px;
+    color: var(--color-text-dim);
+    opacity: 0.85;
+}
+
+/* Markdown Rendered Styling inside Gallery */
+.garage-markdown-body {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: #e2e8f0;
+}
+
+.garage-markdown-body h1,
+.garage-markdown-body h2,
+.garage-markdown-body h3,
+.garage-markdown-body h4,
+.garage-markdown-body h5,
+.garage-markdown-body h6 {
+    font-family: var(--font-heading);
+    color: #ffffff;
+    margin-top: 1.25rem;
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+}
+
+.garage-markdown-body h1:first-child,
+.garage-markdown-body h2:first-child,
+.garage-markdown-body h3:first-child {
+    margin-top: 0;
+}
+
+.garage-markdown-body h1 { font-size: 1.6rem; }
+.garage-markdown-body h2 { font-size: 1.4rem; }
+.garage-markdown-body h3 { font-size: 1.2rem; }
+.garage-markdown-body h4 { font-size: 1.05rem; }
+
+.garage-markdown-body p {
+    margin-bottom: 0.85rem;
+}
+
+.garage-markdown-body p:last-child {
+    margin-bottom: 0;
+}
+
+.garage-markdown-body ul,
+.garage-markdown-body ol {
+    margin-left: 1.5rem;
+    margin-bottom: 0.85rem;
+}
+
+.garage-markdown-body li {
+    margin-bottom: 0.35rem;
+}
+
+.garage-markdown-body blockquote {
+    border-left: 3px solid var(--color-primary);
+    background: rgba(225, 6, 0, 0.06);
+    padding: 0.65rem 1rem;
+    border-radius: 0 4px 4px 0;
+    margin: 1rem 0;
+    color: #cbd5e1;
+    font-style: italic;
+}
+
+.garage-markdown-body pre {
+    background: #090c12;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    margin: 1rem 0;
+}
+
+.garage-markdown-body code {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    padding: 0.15rem 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: #ff9b9b;
+}
+
+.garage-markdown-body a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.15s ease;
+}
+
+.garage-markdown-body a:hover {
+    color: var(--color-primary-hover);
+}
+
+.garage-markdown-body hr {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 1.5rem 0;
+}
+
+/* =========================================================================
+ * Mobile & Tablet Responsiveness
+ * ========================================================================= */
+@media (max-width: 1080px) {
+    .garage-filter-grid {
+        grid-template-columns: repeat(3, 1fr) auto;
+    }
+    .garage-filter-search {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 860px) {
+    .garage-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .garage-detail-title-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .garage-detail-body {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .garage-detail-media-col {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .garage-specs-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.9rem 1.25rem;
+    }
+
+    .garage-detail-model-name {
+        font-size: 1.6rem;
+    }
+
+    .garage-alphabet-wrapper {
+        top: 56px;
+    }
+}
+

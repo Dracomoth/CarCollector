@@ -188,9 +188,16 @@ switch ($path) {
         ColorsController::handle();
         break;
 
+    case '/garage':
+    case '/garage.php':
+        require_once __DIR__ . '/source/controllers/GarageController.php';
+        GarageController::handle();
+        break;
+
     case '/':
         require_once __DIR__ . '/source/services/PermissionService.php';
         $user = $_SESSION['user'] ?? null;
+        $canAccessGarage = $user ? PermissionService::canAccess($user, 'garage') : false;
         $canAccessUsers = $user ? PermissionService::canAccess($user, 'users') : false;
         $canAccessRoles = $user ? PermissionService::canAccess($user, 'roles') : false;
         $canAccessModels = $user ? PermissionService::canAccess($user, 'models') : false;

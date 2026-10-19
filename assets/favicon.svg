@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#181d2a"/>
+      <stop offset="100%" stop-color="#090c10"/>
+    </linearGradient>
+    <linearGradient id="carGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff2019"/>
+      <stop offset="100%" stop-color="#e10600"/>
+    </linearGradient>
+  </defs>
+  <!-- Background badge -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#bgGrad)" stroke="#222a38" stroke-width="2"/>
+  <rect x="4" y="4" width="56" height="56" rx="12" fill="none" stroke="#e10600" stroke-width="1" stroke-opacity="0.3"/>
+  
+  <!-- Sleek sports car silhouette -->
+  <!-- Main body -->
+  <path d="M10 39 C12 37, 16 36, 20 36 C24 36, 26 39, 29 39 L37 39 C40 39, 42 36, 46 36 C50 36, 53 37, 55 39 C56 39, 57 38, 57 37 C57 35, 54 33, 50 32 L44 32 C42 27, 38 23, 31 23 L22 23 C18 23, 14 26, 12 30 L8 34 C6 36, 6 38, 7 39 Z" fill="url(#carGrad)"/>
+  
+  <!-- Cabin/Window -->
+  <path d="M22 25 L31 25 C36 25, 39 28, 41 32 L15 32 C16 28, 19 25, 22 25 Z" fill="#121620" opacity="0.85"/>
+  <path d="M27 25.5 L28 31.5" stroke="#e10600" stroke-width="1" opacity="0.6"/>
+
+  <!-- Wheels -->
+  <!-- Front Wheel -->
+  <circle cx="18" cy="40" r="5" fill="#090c10" stroke="#8b99ae" stroke-width="1.5"/>
+  <circle cx="18" cy="40" r="2" fill="#e10600"/>
+  <!-- Rear Wheel -->
+  <circle cx="48" cy="40" r="5" fill="#090c10" stroke="#8b99ae" stroke-width="1.5"/>
+  <circle cx="48" cy="40" r="2" fill="#e10600"/>
+
+  <!-- Headlight streak -->
+  <path d="M7 36 L11 36" stroke="#f1f5f9" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

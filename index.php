@@ -21,11 +21,42 @@ $isLoggedIn = isset($_SESSION['user']) && !empty($_SESSION['user']);
 $publicRoutes = ['/login', '/logout'];
 
 // -----------------------------------------------------------------------------
+// Static Asset / Favicon Short-Circuit
+// If a static file or favicon reaches index.php, return 404 or 204 immediately.
+// Never redirect assets to /login or save them into session.
+// -----------------------------------------------------------------------------
+if ($path === '/favicon.ico') {
+    $fav = file_exists(__DIR__ . '/assets/favicon.ico') ? (__DIR__ . '/assets/favicon.ico') : (__DIR__ . '/favicon.ico');
+    if (file_exists($fav)) {
+        header('Content-Type: image/x-icon');
+        header('Content-Length: ' . filesize($fav));
+        readfile($fav);
+        exit;
+    }
+    http_response_code(204);
+    exit;
+}
+
+if (preg_match('/\.(ico|png|jpe?g|gif|svg|webp|css|js|map|woff2?|ttf|eot)$/i', $path)) {
+    http_response_code(404);
+    header('Content-Type: text/plain');
+    echo "404 Not Found\n";
+    exit;
+}
+
+// -----------------------------------------------------------------------------
 // Authentication Guard: Redirect non-logged users to the login screen
 // -----------------------------------------------------------------------------
 if (!$isLoggedIn && !in_array($path, $publicRoutes, true)) {
-    // Remember the originally requested URL to return to after login
-    $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+    // Only remember safe, user-navigated GET pages for post-login redirect.
+    // Exclude AJAX calls, static assets, favicon, etc.
+    $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+    $isAsset = (bool) preg_match('/\.(ico|png|jpe?g|gif|svg|webp|css|js|map|woff2?|ttf|eot|json|xml|txt)$/i', $path);
+
+    if ($requestMethod === 'GET' && !$isAjax && !$isAsset && $path !== '/favicon.ico') {
+        $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+    }
+
     header('Location: /login', true, 302);
     exit;
 }
@@ -54,6 +85,20 @@ switch ($path) {
 
                 $redirectTo = $_SESSION['redirect_after_login'] ?? '/';
                 unset($_SESSION['redirect_after_login']);
+
+                // Sanitize redirect target: ensure internal path, exclude assets and auth pages
+                $redirectPath = parse_url($redirectTo, PHP_URL_PATH) ?? '/';
+                $isInvalid = empty($redirectTo)
+                    || !is_string($redirectTo)
+                    || str_starts_with($redirectTo, '//')
+                    || !str_starts_with($redirectTo, '/')
+                    || in_array(rtrim($redirectPath, '/'), ['/login', '/logout', ''], true)
+                    || (bool) preg_match('/\.(ico|png|jpe?g|gif|svg|webp|css|js|map|woff2?|ttf|eot|json|xml|txt)$/i', $redirectPath);
+
+                if ($isInvalid) {
+                    $redirectTo = '/';
+                }
+
                 header('Location: ' . $redirectTo, true, 302);
                 exit;
             } else {
@@ -90,11 +135,13 @@ switch ($path) {
         exit;
 
     case '/users':
+    case '/users.php':
         require_once __DIR__ . '/source/controllers/UsersController.php';
         UsersController::handle();
         break;
 
     case '/roles':
+    case '/roles.php':
         require_once __DIR__ . '/source/controllers/RolesController.php';
         RolesController::handle();
         break;

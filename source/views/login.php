@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - CarCollector</title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <link rel="alternate icon" href="/assets/favicon.ico">
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body class="auth-page">

@@ -28,5 +28,25 @@ if ($decodedUri !== '/' && file_exists($targetFile) && !is_dir($targetFile)) {
     return false; // Built-in web server serves the static file as-is
 }
 
-// 3. Forward all application requests to index.php (Front Controller)
+// 3. For favicon.ico, serve from assets/favicon.ico if available, or return 204
+if ($decodedUri === '/favicon.ico') {
+    $fav = __DIR__ . '/assets/favicon.ico';
+    if (file_exists($fav)) {
+        header('Content-Type: image/x-icon');
+        header('Content-Length: ' . filesize($fav));
+        readfile($fav);
+        exit;
+    }
+    http_response_code(204);
+    exit;
+}
+if (preg_match('/\.(ico|png|jpe?g|gif|svg|webp|css|js|map|woff2?|ttf|eot)$/i', $decodedUri)) {
+    http_response_code(404);
+    header('Content-Type: text/plain');
+    echo "404 Not Found\n";
+    exit;
+}
+
+// 4. Forward all application requests to index.php (Front Controller)
 require_once __DIR__ . '/index.php';
+

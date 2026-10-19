@@ -104,6 +104,8 @@ if (!function_exists('renderScreenIcon')) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?></title>
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    <link rel="alternate icon" href="/assets/favicon.ico">
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body class="has-cockpit-layout">
@@ -272,13 +274,35 @@ if (!function_exists('renderScreenIcon')) {
                         </div>
                     <?php endif; ?>
 
-                    <!-- Grouped Screens (displayed grouped under the category heading) -->
+                    <!-- Grouped Screens (displayed grouped under collapsible category heading) -->
                     <?php if (!empty($catData['grouped_items'])): ?>
-                        <div class="sidebar-category-block">
-                            <div class="sidebar-category-header">
+                        <?php 
+                        $catSlug = 'cat-' . preg_replace('/[^a-z0-9_-]/i', '', strtolower($catName));
+                        $hasActiveChild = false;
+                        foreach ($catData['grouped_items'] as $item) {
+                            $href = ($item['screen_key'] === 'home' || $item['screen_key'] === 'dashboard') ? '/' : '/' . ltrim($item['screen_key'], '/');
+                            if ($currentPath === $href) {
+                                $hasActiveChild = true;
+                                break;
+                            }
+                        }
+                        ?>
+                        <div class="sidebar-category-block is-collapsed <?= $hasActiveChild ? 'has-active-child' : '' ?>" id="<?= $catSlug ?>-block">
+                            <button type="button" 
+                                    class="sidebar-category-header sidebar-category-toggle" 
+                                    aria-expanded="false" 
+                                    aria-controls="<?= $catSlug ?>-items"
+                                    id="<?= $catSlug ?>-toggle"
+                                    title="Toggle <?= htmlspecialchars($catName) ?> category">
                                 <span class="sidebar-category-title"><?= htmlspecialchars($catName) ?></span>
-                            </div>
-                            <div class="sidebar-category-items">
+                                <span class="sidebar-category-meta">
+                                    <span class="sidebar-category-count"><?= count($catData['grouped_items']) ?></span>
+                                    <svg class="sidebar-category-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="sidebar-category-items" id="<?= $catSlug ?>-items" role="region" aria-labelledby="<?= $catSlug ?>-toggle">
                                 <?php foreach ($catData['grouped_items'] as $item): ?>
                                     <?php 
                                     $href = ($item['screen_key'] === 'home' || $item['screen_key'] === 'dashboard') ? '/' : '/' . ltrim($item['screen_key'], '/');

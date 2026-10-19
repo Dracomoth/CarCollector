@@ -114,6 +114,24 @@ $currentDateFormatted = date('D, M j, Y');
                 });
             }
 
+            // Collapsible Sidebar Categories (collapsed by default)
+            var categoryToggles = document.querySelectorAll('.sidebar-category-toggle');
+            categoryToggles.forEach(function(toggle) {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var block = toggle.closest('.sidebar-category-block');
+                    if (!block) return;
+                    var isCollapsed = block.classList.contains('is-collapsed');
+                    if (isCollapsed) {
+                        block.classList.remove('is-collapsed');
+                        toggle.setAttribute('aria-expanded', 'true');
+                    } else {
+                        block.classList.add('is-collapsed');
+                        toggle.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            });
+
             // Keyboard navigation (Escape key to close drawer/dropdown)
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {

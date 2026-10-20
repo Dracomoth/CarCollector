@@ -625,6 +625,14 @@ require __DIR__ . '/layout/header.php';
                     loadAvailableModels();
                 }, 250);
             });
+            searchInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    clearTimeout(searchTimer);
+                    currentPage = 1;
+                    loadAvailableModels();
+                }
+            });
         }
 
         if (filterBrand) {

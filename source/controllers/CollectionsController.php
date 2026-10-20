@@ -64,8 +64,10 @@ class CollectionsController {
             header('Content-Type: application/json');
             try {
                 $collectionId = (int)($_GET['collection_id'] ?? 0);
+                $searchTerm = trim($_GET['search'] ?? ($_GET['name'] ?? ''));
                 $filters = [
-                    'name'     => trim($_GET['search'] ?? ''),
+                    'search'   => $searchTerm,
+                    'name'     => $searchTerm,
                     'brand_id' => !empty($_GET['brand_id']) ? (int)$_GET['brand_id'] : null,
                     'maker_id' => !empty($_GET['maker_id']) ? (int)$_GET['maker_id'] : null,
                 ];

@@ -281,9 +281,14 @@ class CollectionRepository {
                 $params['collection_id'] = $collectionId;
             }
 
-            if (!empty($filters['name'])) {
-                $sql .= " AND (m.model LIKE :name OR m.series LIKE :name)";
-                $params['name'] = '%' . trim($filters['name']) . '%';
+            $search = !empty($filters['search']) ? $filters['search'] : (!empty($filters['name']) ? $filters['name'] : '');
+            if (!empty($search)) {
+                $searchTerm = '%' . trim($search) . '%';
+                $sql .= " AND (m.model LIKE :search_model OR m.series LIKE :search_series OR b.name LIKE :search_brand OR mk.name LIKE :search_maker)";
+                $params['search_model'] = $searchTerm;
+                $params['search_series'] = $searchTerm;
+                $params['search_brand'] = $searchTerm;
+                $params['search_maker'] = $searchTerm;
             }
 
             if (!empty($filters['brand_id'])) {

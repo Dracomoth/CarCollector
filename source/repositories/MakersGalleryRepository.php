@@ -22,16 +22,45 @@ class MakersGalleryRepository {
         }
 
         try {
-            $sql = "SELECT mk.`id`, mk.`name`, mk.`description`, mk.`logo_path`, mk.`created`, mk.`modified`,
-                           COUNT(m.`id`) AS `models_count`
+            $sql = "SELECT mk.`id`, mk.`name`, mk.`description`, mk.`logo_path`, mk.`created`, mk.`modified`
                     FROM `makers` mk
-                    LEFT JOIN `models` m ON m.`maker_id` = mk.`id` AND m.`user_id` = :user_id
-                    GROUP BY mk.`id`, mk.`name`, mk.`description`, mk.`logo_path`, mk.`created`, mk.`modified`
                     ORDER BY mk.`name` ASC, mk.`id` ASC";
 
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['user_id' => $userId]);
-            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+            $stmt->execute();
+            $makers = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+            // Fetch user's models for all makers
+            $mStmt = $pdo->prepare("
+                SELECT m.`id`, m.`model`, m.`image_path`, m.`maker_id`
+                FROM `models` m
+                WHERE m.`user_id` = :user_id AND m.`maker_id` IS NOT NULL
+                ORDER BY m.`created` DESC, m.`id` DESC
+            ");
+            $mStmt->execute(['user_id' => $userId]);
+            $models = $mStmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+            $modelsByMaker = [];
+            foreach ($models as $m) {
+                $mid = (int)$m['maker_id'];
+                if (!isset($modelsByMaker[$mid])) {
+                    $modelsByMaker[$mid] = [];
+                }
+                $modelsByMaker[$mid][] = [
+                    'id'         => (int)$m['id'],
+                    'model'      => $m['model'],
+                    'image_path' => $m['image_path'],
+                ];
+            }
+
+            foreach ($makers as &$mk) {
+                $mid = (int)$mk['id'];
+                $mk['models'] = $modelsByMaker[$mid] ?? [];
+                $mk['models_count'] = count($mk['models']);
+            }
+            unset($mk);
+
+            return $makers;
         } catch (Throwable $e) {
             error_log("Failed to fetch makers gallery list for user {$userId}: " . $e->getMessage());
             return [];
@@ -39,7 +68,7 @@ class MakersGalleryRepository {
     }
 
     /**
-     * Retrieve single maker details with user's model count.
+     * Retrieve single maker details with user's model count and models list.
      * 
      * @param int $makerId
      * @param int $userId
@@ -52,24 +81,66 @@ class MakersGalleryRepository {
         }
 
         try {
-            $sql = "SELECT mk.`id`, mk.`name`, mk.`description`, mk.`logo_path`, mk.`created`, mk.`modified`,
-                           COUNT(m.`id`) AS `models_count`
+            $sql = "SELECT mk.`id`, mk.`name`, mk.`description`, mk.`logo_path`, mk.`created`, mk.`modified`
                     FROM `makers` mk
-                    LEFT JOIN `models` m ON m.`maker_id` = mk.`id` AND m.`user_id` = :user_id
                     WHERE mk.`id` = :maker_id
-                    GROUP BY mk.`id`, mk.`name`, mk.`description`, mk.`logo_path`, mk.`created`, mk.`modified`
                     LIMIT 1";
 
             $stmt = $pdo->prepare($sql);
-            $stmt->execute([
-                'maker_id' => $makerId,
-                'user_id'  => $userId,
-            ]);
+            $stmt->execute(['maker_id' => $makerId]);
             $maker = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $maker ?: null;
+            if (!$maker) {
+                return null;
+            }
+
+            $mStmt = $pdo->prepare("
+                SELECT m.`id`, m.`model`, m.`image_path`
+                FROM `models` m
+                WHERE m.`user_id` = :user_id AND m.`maker_id` = :maker_id
+                ORDER BY m.`created` DESC, m.`id` DESC
+            ");
+            $mStmt->execute([
+                'user_id'  => $userId,
+                'maker_id' => $makerId,
+            ]);
+            $maker['models'] = $mStmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+            $maker['models_count'] = count($maker['models']);
+
+            return $maker;
         } catch (Throwable $e) {
             error_log("Failed to fetch maker details for maker {$makerId}: " . $e->getMessage());
             return null;
+        }
+    }
+
+    /**
+     * Retrieve models belonging to a maker for a specific user.
+     * 
+     * @param int $makerId
+     * @param int $userId
+     * @return array
+     */
+    public static function getModelsByMakerId(int $makerId, int $userId): array {
+        $pdo = Database::getConnection();
+        if (!$pdo || $makerId <= 0 || $userId <= 0) {
+            return [];
+        }
+
+        try {
+            $stmt = $pdo->prepare("
+                SELECT m.`id`, m.`model`, m.`image_path`
+                FROM `models` m
+                WHERE m.`user_id` = :user_id AND m.`maker_id` = :maker_id
+                ORDER BY m.`created` DESC, m.`id` DESC
+            ");
+            $stmt->execute([
+                'user_id'  => $userId,
+                'maker_id' => $makerId,
+            ]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        } catch (Throwable $e) {
+            error_log("Failed to fetch models for maker {$makerId}: " . $e->getMessage());
+            return [];
         }
     }
 }

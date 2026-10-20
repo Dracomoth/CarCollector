@@ -993,7 +993,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 9. Initial Load & Deep-Link Check
     const initialUrlParams = new URLSearchParams(window.location.search);
-    const initialId = initialUrlParams.get('id');
+    const initialId = initialUrlParams.get('id') || initialUrlParams.get('model_id');
 
     // Pre-filter by brand if coming from Brands Gallery (e.g. ?brand_id=3 or ?brand=Hot+Wheels)
     const initialBrandParam = initialUrlParams.get('brand_id') || initialUrlParams.get('brand');

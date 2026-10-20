@@ -3900,14 +3900,19 @@ body.sidebar-active {
 .garage-card-img-box {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 11;
     background: #090c12;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     border-bottom: 1px solid var(--color-border);
-    padding: 0.35rem;
+    padding: 0.2rem;
+}
+
+.brand-card-logo-box {
+    aspect-ratio: 16 / 11;
+    padding: 0.25rem 0.35rem;
 }
 
 .garage-card-img {
@@ -3916,8 +3921,18 @@ body.sidebar-active {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    object-position: center;
     display: block;
     transition: transform 0.35s ease;
+}
+
+.brand-card-logo {
+    max-width: 100%;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
 }
 
 .garage-card:hover .garage-card-img {
@@ -3937,35 +3952,37 @@ body.sidebar-active {
 
 .garage-card-scale-badge {
     position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(14, 18, 26, 0.85);
+    top: 6px;
+    right: 6px;
+    background: rgba(14, 18, 26, 0.88);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: var(--radius-sm);
-    padding: 2px 7px;
-    font-size: 0.72rem;
+    padding: 2px 6px;
+    font-size: 0.68rem;
     font-weight: 700;
     color: #ffffff;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    z-index: 2;
 }
 
 .garage-card-info {
-    padding: 0.9rem 1rem;
+    padding: 0.5rem 0.7rem;
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.25rem;
     flex: 1;
     justify-content: space-between;
 }
 
 .garage-card-title {
     font-family: var(--font-heading);
-    font-size: 1.05rem;
+    font-size: 0.82rem;
     font-weight: 600;
+    letter-spacing: 0.01em;
     color: var(--color-text);
-    line-height: 1.3;
+    line-height: 1.25;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -3973,14 +3990,14 @@ body.sidebar-active {
 }
 
 .garage-card:hover .garage-card-title {
-    color: #ffffff;
+    color: var(--color-primary);
 }
 
 .garage-card-meta {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 0.82rem;
+    gap: 0.35rem;
+    font-size: 0.72rem;
     color: var(--color-text-muted);
 }
 
@@ -5593,6 +5610,221 @@ body.sidebar-active {
     border: 1px dashed var(--color-border);
     border-radius: var(--radius-md);
 }
+
+/* =============================================================================
+   Gallery Detail Models Grid & Pagination
+   (Brands Gallery, Makers Gallery, Collections Gallery)
+   ============================================================================= */
+
+.detail-models-section {
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.detail-models-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.detail-models-title {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.detail-models-title-icon {
+    color: var(--color-primary);
+}
+
+.detail-models-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.25rem;
+}
+
+.detail-model-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.detail-model-card:hover {
+    transform: translateY(-3px);
+    border-color: rgba(225, 6, 0, 0.45);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 12px rgba(225, 6, 0, 0.15);
+}
+
+.detail-model-card-img-box {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    background: #080b0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0.25rem;
+}
+
+.detail-model-card-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: transform 0.25s ease;
+}
+
+.detail-model-card:hover .detail-model-card-img {
+    transform: scale(1.06);
+}
+
+.detail-model-card-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--color-text-dim);
+}
+
+.detail-model-card-info {
+    padding: 0.45rem 0.6rem;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    background: var(--color-surface);
+}
+
+.detail-model-card-name {
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    line-height: 1.25;
+    transition: color 0.15s ease;
+}
+
+.detail-model-card:hover .detail-model-card-name {
+    color: var(--color-primary);
+}
+
+/* Empty State */
+.detail-models-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2.25rem 1rem;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-md);
+    background: rgba(0, 0, 0, 0.15);
+    color: var(--color-text-muted);
+}
+
+.detail-models-empty-icon {
+    color: var(--color-text-dim);
+    margin-bottom: 0.5rem;
+}
+
+.detail-models-empty-text {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Pagination Controls */
+.detail-models-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.detail-pagination-info {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-dim);
+}
+
+.detail-pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.detail-pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 0.6rem;
+    background: var(--color-surface-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    user-select: none;
+}
+
+.detail-pagination-btn:hover:not(:disabled):not(.is-active) {
+    background: var(--color-surface-hover);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--color-text);
+}
+
+.detail-pagination-btn.is-active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+    cursor: default;
+    box-shadow: 0 0 10px rgba(225, 6, 0, 0.4);
+}
+
+.detail-pagination-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.detail-pagination-ellipsis {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 34px;
+    font-size: 0.85rem;
+    color: var(--color-text-dim);
+}
+
 
 
 

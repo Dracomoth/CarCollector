@@ -221,6 +221,39 @@ $makersJson = json_encode($allMakers, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APO
                         <span class="text-muted text-sm">No description provided for this maker.</span>
                     </div>
                 </div>
+
+                <!-- Associated Models Grid Section (Paginated) -->
+                <div class="detail-models-section" id="detail-maker-models-section">
+                    <div class="detail-models-header">
+                        <h3 class="detail-models-title">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="detail-models-title-icon">
+                                <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 10.7 2 11.3 2 12v4c0 .6.4 1 1 1h2"></path>
+                                <circle cx="7" cy="17" r="2"></circle>
+                                <circle cx="17" cy="17" r="2"></circle>
+                            </svg>
+                            <span>Models by this Maker</span>
+                        </h3>
+                    </div>
+
+                    <!-- Models Grid -->
+                    <div class="detail-models-grid" id="detail-maker-models-grid"></div>
+
+                    <!-- Empty State for 0 models -->
+                    <div class="detail-models-empty" id="detail-maker-models-empty" style="display: none;">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="detail-models-empty-icon">
+                            <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 10.7 2 11.3 2 12v4c0 .6.4 1 1 1h2"></path>
+                            <circle cx="7" cy="17" r="2"></circle>
+                            <circle cx="17" cy="17" r="2"></circle>
+                        </svg>
+                        <p class="detail-models-empty-text">No models in your collection belong to this maker yet.</p>
+                    </div>
+
+                    <!-- Pagination Bar -->
+                    <div class="detail-models-pagination" id="detail-maker-models-pagination" style="display: none;">
+                        <div class="detail-pagination-info" id="detail-maker-pagination-info"></div>
+                        <div class="detail-pagination-controls" id="detail-maker-pagination-controls"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -288,6 +321,137 @@ document.addEventListener('DOMContentLoaded', () => {
     const detailCreatedGrid = document.getElementById('detail-maker-created-grid');
     const detailMarkdownContent = document.getElementById('detail-maker-markdown-content');
     const detailNotesEmpty = document.getElementById('detail-maker-notes-empty');
+    const detailModelsGrid = document.getElementById('detail-maker-models-grid');
+    const detailModelsEmpty = document.getElementById('detail-maker-models-empty');
+    const detailModelsPagination = document.getElementById('detail-maker-models-pagination');
+    const detailPaginationInfo = document.getElementById('detail-maker-pagination-info');
+    const detailPaginationControls = document.getElementById('detail-maker-pagination-controls');
+
+    const MODELS_PER_PAGE = 18;
+    let currentMakerModels = [];
+    let currentMakerModelsPage = 1;
+
+    function getPaginationRange(current, total) {
+        if (total <= 7) {
+            return Array.from({ length: total }, (_, i) => i + 1);
+        }
+        if (current <= 4) {
+            return [1, 2, 3, 4, 5, '...', total];
+        }
+        if (current >= total - 3) {
+            return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+        }
+        return [1, '...', current - 1, current, current + 1, '...', total];
+    }
+
+    function renderDetailModels(models, page = 1) {
+        currentMakerModels = models || [];
+        const totalModels = currentMakerModels.length;
+
+        if (totalModels === 0) {
+            detailModelsGrid.innerHTML = '';
+            detailModelsGrid.style.display = 'none';
+            detailModelsEmpty.style.display = 'flex';
+            detailModelsPagination.style.display = 'none';
+            return;
+        }
+
+        detailModelsEmpty.style.display = 'none';
+        detailModelsGrid.style.display = 'grid';
+
+        const totalPages = Math.ceil(totalModels / MODELS_PER_PAGE);
+        currentMakerModelsPage = Math.max(1, Math.min(page, totalPages));
+
+        const startIndex = (currentMakerModelsPage - 1) * MODELS_PER_PAGE;
+        const endIndex = Math.min(startIndex + MODELS_PER_PAGE, totalModels);
+        const pageModels = currentMakerModels.slice(startIndex, endIndex);
+
+        detailModelsGrid.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+
+        pageModels.forEach(m => {
+            const card = document.createElement('a');
+            card.className = 'detail-model-card';
+            card.href = `/garage.php?id=${encodeURIComponent(m.id)}`;
+            card.title = `View ${m.model || 'Model'} in Garage`;
+
+            const imgHtml = m.image_path
+                ? `<img src="${escapeHtml(m.image_path)}" alt="${escapeHtml(m.model || 'Model')}" class="detail-model-card-img" loading="lazy">`
+                : `<div class="detail-model-card-placeholder">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 10.7 2 11.3 2 12v4c0 .6.4 1 1 1h2"></path>
+                        <circle cx="7" cy="17" r="2"></circle>
+                        <circle cx="17" cy="17" r="2"></circle>
+                    </svg>
+                    <span class="text-xs text-muted" style="margin-top: 4px;">No image</span>
+                   </div>`;
+
+            card.innerHTML = `
+                <div class="detail-model-card-img-box">
+                    ${imgHtml}
+                </div>
+                <div class="detail-model-card-info">
+                    <h4 class="detail-model-card-name" title="${escapeHtml(m.model || 'Unnamed Model')}">${escapeHtml(m.model || 'Unnamed Model')}</h4>
+                </div>
+            `;
+            fragment.appendChild(card);
+        });
+
+        detailModelsGrid.appendChild(fragment);
+
+        // Pagination controls
+        if (totalPages > 1) {
+            detailModelsPagination.style.display = 'flex';
+            detailPaginationInfo.textContent = `Showing ${startIndex + 1}–${endIndex} of ${totalModels} models`;
+            detailPaginationControls.innerHTML = '';
+
+            // Prev button
+            const prevBtn = document.createElement('button');
+            prevBtn.type = 'button';
+            prevBtn.className = 'detail-pagination-btn';
+            prevBtn.innerHTML = `&laquo; Prev`;
+            prevBtn.disabled = (currentMakerModelsPage === 1);
+            prevBtn.addEventListener('click', () => {
+                renderDetailModels(currentMakerModels, currentMakerModelsPage - 1);
+            });
+            detailPaginationControls.appendChild(prevBtn);
+
+            // Page numbers
+            const pageRange = getPaginationRange(currentMakerModelsPage, totalPages);
+            pageRange.forEach(p => {
+                if (p === '...') {
+                    const dots = document.createElement('span');
+                    dots.className = 'detail-pagination-ellipsis';
+                    dots.innerHTML = '&hellip;';
+                    detailPaginationControls.appendChild(dots);
+                } else {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.type = 'button';
+                    pageBtn.className = 'detail-pagination-btn' + (p === currentMakerModelsPage ? ' is-active' : '');
+                    pageBtn.textContent = p;
+                    if (p !== currentMakerModelsPage) {
+                        pageBtn.addEventListener('click', () => {
+                            renderDetailModels(currentMakerModels, p);
+                        });
+                    }
+                    detailPaginationControls.appendChild(pageBtn);
+                }
+            });
+
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.type = 'button';
+            nextBtn.className = 'detail-pagination-btn';
+            nextBtn.innerHTML = `Next &raquo;`;
+            nextBtn.disabled = (currentMakerModelsPage === totalPages);
+            nextBtn.addEventListener('click', () => {
+                renderDetailModels(currentMakerModels, currentMakerModelsPage + 1);
+            });
+            detailPaginationControls.appendChild(nextBtn);
+        } else {
+            detailModelsPagination.style.display = 'none';
+        }
+    }
 
     // Helper: Determine index bucket ('#', 'A'..'Z') from maker name
     function getMakerBucket(name) {
@@ -511,6 +675,9 @@ document.addEventListener('DOMContentLoaded', () => {
             detailMarkdownContent.style.display = 'none';
             detailNotesEmpty.style.display = 'block';
         }
+
+        // Render Associated Models (Paginated)
+        renderDetailModels(maker.models || [], 1);
 
         // Breadcrumb updates: [Letter] > [Maker Name]
         breadcrumbLetter.textContent = state.selectedLetter;

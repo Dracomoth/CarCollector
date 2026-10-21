@@ -125,7 +125,7 @@ require __DIR__ . '/layout/header.php';
 
                                         <!-- Image preview container with fixed dimensions -->
                                         <div class="brand-logo-current-wrap" id="collection-logo-current-wrap" style="<?= empty($selectedCollection['logo_path']) ? 'display: none;' : '' ?>">
-                                            <img src="<?= !empty($selectedCollection['logo_path']) ? htmlspecialchars($selectedCollection['logo_path'], ENT_QUOTES, 'UTF-8') : '' ?>" 
+                                            <img src="<?= htmlspecialchars(ImageHelper::versioned($selectedCollection['logo_path'] ?? '', $selectedCollection['modified'] ?? null), ENT_QUOTES, 'UTF-8') ?>" 
                                                  alt="Collection Logo" 
                                                  class="brand-logo-preview-image" 
                                                  id="collection-logo-preview-img">
@@ -194,7 +194,7 @@ require __DIR__ . '/layout/header.php';
                                         <div class="collection-model-item" id="model-item-<?= (int)$m['id'] ?>">
                                             <div class="collection-model-item-info">
                                                 <?php if (!empty($m['image_path'])): ?>
-                                                    <img src="<?= htmlspecialchars($m['image_path'], ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($m['model'], ENT_QUOTES, 'UTF-8') ?>" class="collection-model-thumb" loading="lazy">
+                                                    <img src="<?= htmlspecialchars(ImageHelper::versioned($m['image_path'], $m['modified'] ?? null), ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($m['model'], ENT_QUOTES, 'UTF-8') ?>" class="collection-model-thumb" loading="lazy">
                                                 <?php else: ?>
                                                     <div class="collection-model-thumb-fallback">
                                                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -702,7 +702,7 @@ require __DIR__ . '/layout/header.php';
             items.forEach(function(m) {
                 var isSel = selectedModelIds.has(m.id);
                 var imgHtml = m.image_path ? 
-                    '<img src="' + escapeHtml(m.image_path) + '" alt="' + escapeHtml(m.model) + '" class="modal-model-card-img" loading="lazy">' :
+                    '<img src="' + escapeHtml(getVersionedImageUrl(m.image_path, m.modified)) + '" alt="' + escapeHtml(m.model) + '" class="modal-model-card-img" loading="lazy">' :
                     '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h12l3 5v4h-2"></path><path d="M5 12h14"></path></svg>';
 
                 html += '<div class="modal-model-card ' + (isSel ? 'is-selected' : '') + '" data-id="' + m.id + '">' +
@@ -839,7 +839,7 @@ require __DIR__ . '/layout/header.php';
             var html = '';
             models.forEach(function(m) {
                 var imgHtml = m.image_path ?
-                    '<img src="' + escapeHtml(m.image_path) + '" alt="' + escapeHtml(m.model) + '" class="collection-model-thumb" loading="lazy">' :
+                    '<img src="' + escapeHtml(getVersionedImageUrl(m.image_path, m.modified)) + '" alt="' + escapeHtml(m.model) + '" class="collection-model-thumb" loading="lazy">' :
                     '<div class="collection-model-thumb-fallback"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="17" r="2"></circle><circle cx="17" cy="17" r="2"></circle><path d="M5 17H3v-4l2-5h12l3 5v4h-2"></path><path d="M5 12h14"></path></svg></div>';
 
                 html += '<div class="collection-model-item" id="model-item-' + m.id + '">' +

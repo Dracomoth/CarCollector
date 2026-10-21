@@ -21,6 +21,7 @@ require_once dirname(__DIR__) . '/repositories/ModelRepository.php';
 require_once dirname(__DIR__) . '/repositories/BrandRepository.php';
 require_once dirname(__DIR__) . '/repositories/MakerRepository.php';
 require_once dirname(__DIR__) . '/services/PermissionService.php';
+require_once dirname(__DIR__) . '/services/ImageHelper.php';
 require_once __DIR__ . '/GridController.php';
 
 class CollectionsController {
@@ -369,7 +370,8 @@ class CollectionsController {
             'width'      => '64px',
             'formatter'  => function($val, $row) {
                 if (!empty($val)) {
-                    return '<div class="table-logo-cell"><img src="' . htmlspecialchars($val, ENT_QUOTES, 'UTF-8') . '" alt="' . htmlspecialchars($row['name'] ?? '', ENT_QUOTES, 'UTF-8') . '" class="table-thumb-logo" loading="lazy"></div>';
+                    $versionedUrl = ImageHelper::versioned($val, $row['modified'] ?? null);
+                    return '<div class="table-logo-cell"><img src="' . htmlspecialchars($versionedUrl, ENT_QUOTES, 'UTF-8') . '" alt="' . htmlspecialchars($row['name'] ?? '', ENT_QUOTES, 'UTF-8') . '" class="table-thumb-logo" loading="lazy"></div>';
                 }
                 $initial = strtoupper(substr($row['name'] ?? 'C', 0, 1));
                 return '<div class="table-logo-cell"><div class="table-logo-fallback" title="No logo">' . htmlspecialchars($initial, ENT_QUOTES, 'UTF-8') . '</div></div>';

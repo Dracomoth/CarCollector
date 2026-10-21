@@ -591,7 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.setAttribute('aria-label', `View details for ${model.model || 'model'}`);
 
             const hasImage = Boolean(model.image_path);
-            const imageSrc = hasImage ? model.image_path : '';
+            const imageSrc = hasImage ? getVersionedImageUrl(model.image_path, model.modified) : '';
             const modelName = model.model || 'Unnamed Model';
             const brandName = model.brand_name || 'Brand';
             const scaleName = model.scale_name || '';
@@ -680,7 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Image Box
         if (model.image_path) {
-            detailImg.src = model.image_path;
+            detailImg.src = getVersionedImageUrl(model.image_path, model.modified);
             detailImg.alt = model.model || 'Model photo';
             detailImg.style.display = 'block';
             detailImgPlaceholder.style.display = 'none';
@@ -696,7 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Pure Logos Strip (smaller, above all info on right, NO text on them)
         let hasAnyLogo = false;
         if (model.brand_logo_path) {
-            detailBrandLogo.src = model.brand_logo_path;
+            detailBrandLogo.src = getVersionedImageUrl(model.brand_logo_path, model.brand_modified);
             detailBrandLogo.alt = (model.brand_name || 'Brand') + ' Logo';
             detailBrandLogoWrap.title = 'View ' + (model.brand_name || 'Brand') + ' in Brands Gallery';
             if (model.brand_id) {
@@ -712,7 +712,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const makerName = (model.maker_name || '').trim();
         if (makerName && model.maker_logo_path) {
-            detailMakerLogo.src = model.maker_logo_path;
+            detailMakerLogo.src = getVersionedImageUrl(model.maker_logo_path, model.maker_modified);
             detailMakerLogo.alt = makerName + ' Logo';
             detailMakerLogoWrap.title = 'View ' + makerName + ' in Makers Gallery';
             if (model.maker_id) {

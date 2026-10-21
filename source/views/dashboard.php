@@ -311,7 +311,7 @@ $donutCircumference = 2 * M_PI * 65; // ~408.407
                                             <span class="legend-color-dot" style="background-color: <?= htmlspecialchars($brand['color']) ?>; box-shadow: 0 0 8px <?= htmlspecialchars($brand['color']) ?>66;"></span>
                                             
                                             <?php if (!empty($brand['brand_logo_path'])): ?>
-                                                <img src="<?= htmlspecialchars($brand['brand_logo_path']) ?>" 
+                                                <img src="<?= htmlspecialchars(ImageHelper::versioned($brand['brand_logo_path'], $brand['brand_modified'] ?? null), ENT_QUOTES, 'UTF-8') ?>" 
                                                      alt="<?= htmlspecialchars($brand['brand_name']) ?>" 
                                                      class="legend-brand-logo"
                                                      loading="lazy">
@@ -485,7 +485,7 @@ $donutCircumference = 2 * M_PI * 65; // ~408.407
                             <a href="<?= htmlspecialchars($colUrl) ?>" class="dashboard-col-item" title="View collection models in Garage">
                                 <div class="col-item-left">
                                     <?php if (!empty($col['logo_path'])): ?>
-                                        <img src="<?= htmlspecialchars($col['logo_path']) ?>" alt="<?= htmlspecialchars($col['name']) ?>" class="col-item-logo">
+                                        <img src="<?= htmlspecialchars(ImageHelper::versioned($col['logo_path'], $col['modified'] ?? null), ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($col['name']) ?>" class="col-item-logo">
                                     <?php else: ?>
                                         <div class="col-item-icon-box">
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -546,7 +546,7 @@ $donutCircumference = 2 * M_PI * 65; // ~408.407
                     <article class="recent-car-card">
                         <a href="<?= htmlspecialchars($modelUrl) ?>" class="recent-car-media-wrap" title="View <?= htmlspecialchars($car['model']) ?> in Garage">
                             <?php if (!empty($car['image_path'])): ?>
-                                <img src="<?= htmlspecialchars($car['image_path']) ?>" 
+                                <img src="<?= htmlspecialchars(ImageHelper::versioned($car['image_path'], $car['modified'] ?? null), ENT_QUOTES, 'UTF-8') ?>" 
                                      alt="<?= htmlspecialchars($car['model']) ?>" 
                                      class="recent-car-img" 
                                      loading="lazy">

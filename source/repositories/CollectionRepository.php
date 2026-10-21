@@ -219,7 +219,7 @@ class CollectionRepository {
         }
 
         try {
-            $sql = "SELECT m.id, m.model, m.model_year, m.year, m.image_path,
+            $sql = "SELECT m.id, m.model, m.model_year, m.year, m.image_path, m.modified,
                            b.name AS brand_name,
                            mk.name AS maker_name,
                            s.scale AS scale_name,
@@ -261,7 +261,7 @@ class CollectionRepository {
         }
 
         try {
-            $sql = "SELECT m.id, m.model, m.model_year, m.year, m.image_path,
+            $sql = "SELECT m.id, m.model, m.model_year, m.year, m.image_path, m.modified,
                            b.name AS brand_name,
                            mk.name AS maker_name,
                            s.scale AS scale_name

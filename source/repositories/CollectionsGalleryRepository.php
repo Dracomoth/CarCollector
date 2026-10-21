@@ -33,7 +33,7 @@ class CollectionsGalleryRepository {
 
             // Fetch user's models for all custom collections
             $mStmt = $pdo->prepare("
-                SELECT m.`id`, m.`model`, m.`image_path`, ci.`collection_id`
+                SELECT m.`id`, m.`model`, m.`image_path`, m.`modified`, ci.`collection_id`
                 FROM `models` m
                 JOIN `collection_items` ci ON ci.`model_id` = m.`id`
                 WHERE m.`user_id` = :user_id
@@ -52,6 +52,7 @@ class CollectionsGalleryRepository {
                     'id'         => (int)$m['id'],
                     'model'      => $m['model'],
                     'image_path' => $m['image_path'],
+                    'modified'   => $m['modified'],
                 ];
             }
 
@@ -99,7 +100,7 @@ class CollectionsGalleryRepository {
             }
 
             $mStmt = $pdo->prepare("
-                SELECT m.`id`, m.`model`, m.`image_path`
+                SELECT m.`id`, m.`model`, m.`image_path`, m.`modified`
                 FROM `models` m
                 JOIN `collection_items` ci ON ci.`model_id` = m.`id`
                 WHERE m.`user_id` = :user_id AND ci.`collection_id` = :collection_id
@@ -134,7 +135,7 @@ class CollectionsGalleryRepository {
 
         try {
             $stmt = $pdo->prepare("
-                SELECT m.`id`, m.`model`, m.`image_path`
+                SELECT m.`id`, m.`model`, m.`image_path`, m.`modified`
                 FROM `models` m
                 JOIN `collection_items` ci ON ci.`model_id` = m.`id`
                 WHERE m.`user_id` = :user_id AND ci.`collection_id` = :collection_id

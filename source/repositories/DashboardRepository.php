@@ -133,11 +133,12 @@ class DashboardRepository {
                     b.id AS brand_id,
                     COALESCE(b.name, 'Unassigned Brand') AS brand_name,
                     b.logo_path AS brand_logo_path,
+                    b.modified AS brand_modified,
                     COUNT(m.id) AS model_count
                 FROM `models` m
                 LEFT JOIN `brands` b ON b.id = m.brand_id
                 WHERE m.user_id = :uid
-                GROUP BY b.id, b.name, b.logo_path
+                GROUP BY b.id, b.name, b.logo_path, b.modified
                 ORDER BY model_count DESC, brand_name ASC
             ");
             $stmt->execute(['uid' => $userId]);
@@ -162,6 +163,7 @@ class DashboardRepository {
                     'brand_id'        => $row['brand_id'] ? (int) $row['brand_id'] : null,
                     'brand_name'      => $row['brand_name'],
                     'brand_logo_path' => $row['brand_logo_path'],
+                    'brand_modified'  => $row['brand_modified'] ?? null,
                     'model_count'     => $count,
                     'percentage'      => $pct,
                     'color'           => $color,
@@ -349,7 +351,8 @@ class DashboardRepository {
                     cd.name AS condition_name,
                     c.name AS color_name,
                     c.hex_code AS color_hex,
-                    m.created
+                    m.created,
+                    m.modified
                 FROM `models` m
                 LEFT JOIN `brands` b ON b.id = m.brand_id
                 LEFT JOIN `makers` mk ON mk.id = m.maker_id
@@ -390,11 +393,12 @@ class DashboardRepository {
                     c.name,
                     c.description,
                     c.logo_path,
+                    c.modified,
                     COUNT(ci.model_id) AS model_count
                 FROM `collections` c
                 LEFT JOIN `collection_items` ci ON ci.collection_id = c.id
                 WHERE c.user_id = :uid
-                GROUP BY c.id, c.name, c.description, c.logo_path
+                GROUP BY c.id, c.name, c.description, c.logo_path, c.modified
                 ORDER BY model_count DESC, c.name ASC
                 LIMIT :lim
             ");

@@ -32,7 +32,7 @@ class MakersGalleryRepository {
 
             // Fetch user's models for all makers
             $mStmt = $pdo->prepare("
-                SELECT m.`id`, m.`model`, m.`image_path`, m.`maker_id`
+                SELECT m.`id`, m.`model`, m.`image_path`, m.`modified`, m.`maker_id`
                 FROM `models` m
                 WHERE m.`user_id` = :user_id AND m.`maker_id` IS NOT NULL
                 ORDER BY m.`created` DESC, m.`id` DESC
@@ -50,6 +50,7 @@ class MakersGalleryRepository {
                     'id'         => (int)$m['id'],
                     'model'      => $m['model'],
                     'image_path' => $m['image_path'],
+                    'modified'   => $m['modified'],
                 ];
             }
 
@@ -94,7 +95,7 @@ class MakersGalleryRepository {
             }
 
             $mStmt = $pdo->prepare("
-                SELECT m.`id`, m.`model`, m.`image_path`
+                SELECT m.`id`, m.`model`, m.`image_path`, m.`modified`
                 FROM `models` m
                 WHERE m.`user_id` = :user_id AND m.`maker_id` = :maker_id
                 ORDER BY m.`created` DESC, m.`id` DESC
@@ -128,7 +129,7 @@ class MakersGalleryRepository {
 
         try {
             $stmt = $pdo->prepare("
-                SELECT m.`id`, m.`model`, m.`image_path`
+                SELECT m.`id`, m.`model`, m.`image_path`, m.`modified`
                 FROM `models` m
                 WHERE m.`user_id` = :user_id AND m.`maker_id` = :maker_id
                 ORDER BY m.`created` DESC, m.`id` DESC

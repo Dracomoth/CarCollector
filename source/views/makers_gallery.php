@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.title = `View ${m.model || 'Model'} in Garage`;
 
             const imgHtml = m.image_path
-                ? `<img src="${escapeHtml(m.image_path)}" alt="${escapeHtml(m.model || 'Model')}" class="detail-model-card-img" loading="lazy">`
+                ? `<img src="${escapeHtml(getVersionedImageUrl(m.image_path, m.modified))}" alt="${escapeHtml(m.model || 'Model')}" class="detail-model-card-img" loading="lazy">`
                 : `<div class="detail-model-card-placeholder">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 10.7 2 11.3 2 12v4c0 .6.4 1 1 1h2"></path>
@@ -585,7 +585,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.setAttribute('aria-label', `View details for maker ${m.name}`);
 
             const logoHtml = m.logo_path 
-                ? `<img src="${escapeHtml(m.logo_path)}" alt="${escapeHtml(m.name)} logo" class="garage-card-img brand-card-logo" loading="lazy">`
+                ? `<img src="${escapeHtml(getVersionedImageUrl(m.logo_path, m.modified))}" alt="${escapeHtml(m.name)} logo" class="garage-card-img brand-card-logo" loading="lazy">`
                 : `<div class="garage-card-img-placeholder">
                     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
@@ -648,7 +648,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Logo Image Box
         if (maker.logo_path) {
-            detailLogoImg.src = maker.logo_path;
+            detailLogoImg.src = getVersionedImageUrl(maker.logo_path, maker.modified);
             detailLogoImg.alt = maker.name + ' Logo';
             detailLogoImg.style.display = 'block';
             detailLogoPlaceholder.style.display = 'none';

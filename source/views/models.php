@@ -307,7 +307,7 @@ require __DIR__ . '/layout/header.php';
 
                                         <!-- Image preview container -->
                                         <div class="brand-logo-current-wrap model-image-current-wrap" id="current-image-wrap" style="<?= empty($selectedModel['image_path']) ? 'display: none;' : '' ?>">
-                                            <img src="<?= htmlspecialchars($selectedModel['image_path'] ?? '', ENT_QUOTES, 'UTF-8') ?>" 
+                                            <img src="<?= htmlspecialchars(ImageHelper::versioned($selectedModel['image_path'] ?? '', $selectedModel['modified'] ?? null), ENT_QUOTES, 'UTF-8') ?>" 
                                                  alt="Model Photo" 
                                                  class="brand-logo-preview-image model-image-preview-image" 
                                                  id="model-image-preview-img">
@@ -767,7 +767,7 @@ require __DIR__ . '/layout/header.php';
                 if (removeInput) removeInput.value = '0';
 
                 if (m.image_path) {
-                    if (previewImg) previewImg.src = m.image_path;
+                    if (previewImg) previewImg.src = getVersionedImageUrl(m.image_path, m.modified);
                     if (currentWrap) currentWrap.style.display = 'flex';
                     if (placeholder) placeholder.style.display = 'none';
                     if (hint) {

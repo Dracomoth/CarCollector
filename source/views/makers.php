@@ -125,7 +125,7 @@ require __DIR__ . '/layout/header.php';
 
                                         <!-- Image preview container with fixed dimensions -->
                                         <div class="maker-logo-current-wrap brand-logo-current-wrap" id="current-logo-wrap" style="<?= empty($selectedMaker['logo_path']) ? 'display: none;' : '' ?>">
-                                            <img src="<?= htmlspecialchars($selectedMaker['logo_path'] ?? '', ENT_QUOTES, 'UTF-8') ?>" 
+                                            <img src="<?= htmlspecialchars(ImageHelper::versioned($selectedMaker['logo_path'] ?? '', $selectedMaker['modified'] ?? null), ENT_QUOTES, 'UTF-8') ?>" 
                                                  alt="Maker Logo" 
                                                  class="maker-logo-preview-image brand-logo-preview-image" 
                                                  id="maker-logo-preview-img">
@@ -397,7 +397,7 @@ require __DIR__ . '/layout/header.php';
 
                 // 5. Update Logo Preview & Remove button state
                 if (maker.logo_path) {
-                    if (previewImg) previewImg.src = maker.logo_path;
+                    if (previewImg) previewImg.src = getVersionedImageUrl(maker.logo_path, maker.modified);
                     if (currentWrap) currentWrap.style.display = 'flex';
                     if (placeholder) placeholder.style.display = 'none';
                     if (hint) {

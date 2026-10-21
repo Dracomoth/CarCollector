@@ -68,6 +68,8 @@ class AuthService {
                 'role_name'    => $user['role_name'],
                 'is_super'     => (bool) $user['is_super'],
                 'avatar_path'  => $user['avatar_path'],
+                'created'      => $user['created'] ?? null,
+                'updated'      => $user['updated'] ?? null,
                 'logged_in_at' => date('Y-m-d H:i:s'),
             ];
 

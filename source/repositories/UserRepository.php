@@ -113,6 +113,8 @@ class UserRepository {
                     u.is_active,
                     u.avatar_path,
                     u.last_login,
+                    u.created,
+                    u.updated,
                     r.name AS role_name,
                     r.is_super
                 FROM `users` u

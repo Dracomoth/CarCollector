@@ -12,8 +12,10 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once dirname(__DIR__, 2) . '/services/Database.php';
 require_once dirname(__DIR__, 2) . '/services/CollectionService.php';
+require_once dirname(__DIR__, 2) . '/services/ImageHelper.php';
 require_once dirname(__DIR__, 2) . '/repositories/ScreenRepository.php';
 require_once dirname(__DIR__, 2) . '/repositories/SystemInfoRepository.php';
+require_once dirname(__DIR__, 2) . '/repositories/UserRepository.php';
 
 $currentUser = $currentUser ?? $user ?? ($_SESSION['user'] ?? []);
 $pageTitle = $pageTitle ?? 'CarCollector - Scale Car Collection';
@@ -30,6 +32,18 @@ if ($currentPath === '') {
 
 // User avatar & initials calculation
 $userAvatar = !empty($currentUser['avatar_path']) ? $currentUser['avatar_path'] : null;
+$userAvatarModified = !empty($currentUser['updated']) ? $currentUser['updated'] : (!empty($currentUser['created']) ? $currentUser['created'] : null);
+if (!empty($userAvatar) && empty($userAvatarModified) && !empty($currentUser['id'])) {
+    $uData = UserRepository::findById((int)$currentUser['id']);
+    if ($uData) {
+        $userAvatarModified = $uData['updated'] ?? $uData['created'] ?? null;
+        if (isset($_SESSION['user'])) {
+            $_SESSION['user']['updated'] = $uData['updated'] ?? null;
+            $_SESSION['user']['created'] = $uData['created'] ?? null;
+        }
+    }
+}
+$userAvatarVersioned = !empty($userAvatar) ? ImageHelper::versioned($userAvatar, $userAvatarModified) : '';
 $firstName = trim($currentUser['first_name'] ?? '');
 $lastName = trim($currentUser['last_name'] ?? '');
 if ($firstName !== '' || $lastName !== '') {
@@ -113,6 +127,24 @@ if (!function_exists('renderScreenIcon')) {
     <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
     <link rel="alternate icon" href="/assets/favicon.ico">
     <link rel="stylesheet" href="/assets/css/style.css">
+    <script>
+    function getVersionedImageUrl(path, modified) {
+        if (!path) return '';
+        if (!modified) return path;
+        var ts = null;
+        if (typeof modified === 'number') {
+            ts = modified;
+        } else if (typeof modified === 'string') {
+            var parsed = Date.parse(modified.replace(/-/g, '/'));
+            if (!isNaN(parsed) && parsed > 0) {
+                ts = Math.floor(parsed / 1000);
+            }
+        }
+        if (!ts) return path;
+        var sep = path.indexOf('?') === -1 ? '?v=' : '&v=';
+        return path + sep + ts;
+    }
+    </script>
 </head>
 <body class="has-cockpit-layout">
 
@@ -181,7 +213,7 @@ if (!function_exists('renderScreenIcon')) {
                             aria-expanded="false" 
                             title="<?= htmlspecialchars($userDisplayName) ?> (<?= htmlspecialchars($currentUser['username'] ?? 'User') ?>)">
                         <?php if (!empty($userAvatar)): ?>
-                            <img src="<?= htmlspecialchars($userAvatar, ENT_QUOTES, 'UTF-8') ?>" 
+                            <img src="<?= htmlspecialchars($userAvatarVersioned, ENT_QUOTES, 'UTF-8') ?>" 
                                  alt="<?= htmlspecialchars($userDisplayName, ENT_QUOTES, 'UTF-8') ?>" 
                                  class="user-avatar-img">
                         <?php else: ?>
@@ -318,7 +350,7 @@ if (!function_exists('renderScreenIcon')) {
         <div class="sidebar-footer">
             <div class="sidebar-user-summary">
                 <?php if (!empty($userAvatar)): ?>
-                    <img src="<?= htmlspecialchars($userAvatar, ENT_QUOTES, 'UTF-8') ?>" 
+                    <img src="<?= htmlspecialchars($userAvatarVersioned, ENT_QUOTES, 'UTF-8') ?>" 
                          alt="Avatar" 
                          class="sidebar-avatar-img">
                 <?php else: ?>

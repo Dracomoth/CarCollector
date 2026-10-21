@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.title = `View ${m.model || 'Model'} in Garage`;
 
             const imgHtml = m.image_path
-                ? `<img src="${escapeHtml(m.image_path)}" alt="${escapeHtml(m.model || 'Model')}" class="detail-model-card-img" loading="lazy">`
+                ? `<img src="${escapeHtml(getVersionedImageUrl(m.image_path, m.modified))}" alt="${escapeHtml(m.model || 'Model')}" class="detail-model-card-img" loading="lazy">`
                 : `<div class="detail-model-card-placeholder">
                     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8C2.1 10.7 2 11.3 2 12v4c0 .6.4 1 1 1h2"></path>
@@ -581,7 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.setAttribute('aria-label', `View details for brand ${b.name}`);
 
             const logoHtml = b.logo_path 
-                ? `<img src="${escapeHtml(b.logo_path)}" alt="${escapeHtml(b.name)} logo" class="garage-card-img brand-card-logo" loading="lazy">`
+                ? `<img src="${escapeHtml(getVersionedImageUrl(b.logo_path, b.modified))}" alt="${escapeHtml(b.name)} logo" class="garage-card-img brand-card-logo" loading="lazy">`
                 : `<div class="garage-card-img-placeholder">
                     <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
@@ -642,7 +642,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Logo Image Box
         if (brand.logo_path) {
-            detailLogoImg.src = brand.logo_path;
+            detailLogoImg.src = getVersionedImageUrl(brand.logo_path, brand.modified);
             detailLogoImg.alt = brand.name + ' Logo';
             detailLogoImg.style.display = 'block';
             detailLogoPlaceholder.style.display = 'none';

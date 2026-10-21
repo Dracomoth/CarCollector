@@ -33,7 +33,7 @@ class BrandsGalleryRepository {
 
             // Fetch user's models for all brands
             $mStmt = $pdo->prepare("
-                SELECT m.`id`, m.`model`, m.`image_path`, m.`brand_id`
+                SELECT m.`id`, m.`model`, m.`image_path`, m.`modified`, m.`brand_id`
                 FROM `models` m
                 WHERE m.`user_id` = :user_id
                 ORDER BY m.`created` DESC, m.`id` DESC
@@ -51,6 +51,7 @@ class BrandsGalleryRepository {
                     'id'         => (int)$m['id'],
                     'model'      => $m['model'],
                     'image_path' => $m['image_path'],
+                    'modified'   => $m['modified'],
                 ];
             }
 
@@ -95,7 +96,7 @@ class BrandsGalleryRepository {
             }
 
             $mStmt = $pdo->prepare("
-                SELECT m.`id`, m.`model`, m.`image_path`
+                SELECT m.`id`, m.`model`, m.`image_path`, m.`modified`
                 FROM `models` m
                 WHERE m.`user_id` = :user_id AND m.`brand_id` = :brand_id
                 ORDER BY m.`created` DESC, m.`id` DESC
@@ -129,7 +130,7 @@ class BrandsGalleryRepository {
 
         try {
             $stmt = $pdo->prepare("
-                SELECT m.`id`, m.`model`, m.`image_path`
+                SELECT m.`id`, m.`model`, m.`image_path`, m.`modified`
                 FROM `models` m
                 WHERE m.`user_id` = :user_id AND m.`brand_id` = :brand_id
                 ORDER BY m.`created` DESC, m.`id` DESC

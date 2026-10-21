@@ -125,7 +125,7 @@ require __DIR__ . '/layout/header.php';
 
                                         <!-- Image preview container with fixed dimensions -->
                                         <div class="brand-logo-current-wrap" id="current-logo-wrap" style="<?= empty($selectedBrand['logo_path']) ? 'display: none;' : '' ?>">
-                                            <img src="<?= htmlspecialchars($selectedBrand['logo_path'] ?? '', ENT_QUOTES, 'UTF-8') ?>" 
+                                            <img src="<?= htmlspecialchars(ImageHelper::versioned($selectedBrand['logo_path'] ?? '', $selectedBrand['modified'] ?? null), ENT_QUOTES, 'UTF-8') ?>" 
                                                  alt="Brand Logo" 
                                                  class="brand-logo-preview-image" 
                                                  id="brand-logo-preview-img">
@@ -397,7 +397,7 @@ require __DIR__ . '/layout/header.php';
 
                 // 5. Update Logo Preview & Remove button state
                 if (brand.logo_path) {
-                    if (previewImg) previewImg.src = brand.logo_path;
+                    if (previewImg) previewImg.src = getVersionedImageUrl(brand.logo_path, brand.modified);
                     if (currentWrap) currentWrap.style.display = 'flex';
                     if (placeholder) placeholder.style.display = 'none';
                     if (hint) {

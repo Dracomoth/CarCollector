@@ -95,7 +95,7 @@ require __DIR__ . '/layout/header.php';
                             <!-- Hex Code & Color Picker -->
                             <div class="form-group" style="margin-top: 1rem;">
                                 <label for="color-hex">Hex Code <span class="required text-danger">*</span></label>
-                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
+                                <div class="color-hex-picker-row" style="display: flex; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
                                     <!-- Interactive Color Swatch Preview Button -->
                                     <button type="button" 
                                             id="btn-color-swatch-preview"

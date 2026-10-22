@@ -9,7 +9,7 @@ require __DIR__ . '/layout/header.php';
                 <h1>Users Management</h1>
                 <p class="text-muted">Create, edit, activate/deactivate, and manage system users and roles.</p>
             </div>
-            <div>
+            <div class="page-header-actions">
                 <?php if (!$isFormVisible): ?>
                     <a href="/users?action=create" class="btn btn-primary" id="btn-new-user">+ New User</a>
                 <?php endif; ?>

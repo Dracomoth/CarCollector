@@ -9,7 +9,7 @@ require __DIR__ . '/layout/header.php';
                 <h1>Roles & Permissions</h1>
                 <p class="text-muted">Manage system roles and configure screen access permissions per device.</p>
             </div>
-            <div>
+            <div class="page-header-actions">
                 <button type="button" class="btn btn-primary" onclick="toggleRoleCreateForm()">+ New Role</button>
             </div>
         </div>
@@ -55,7 +55,7 @@ require __DIR__ . '/layout/header.php';
         <div class="roles-layout">
             <!-- Left Sidebar: Roles List -->
             <aside class="roles-sidebar">
-                <div class="card sidebar-card">
+                <div class="card sidebar-card roles-sidebar-card">
                     <h3 class="sidebar-title">Roles</h3>
                     <div class="roles-list">
                         <?php foreach ($roles as $r): ?>
@@ -92,14 +92,17 @@ require __DIR__ . '/layout/header.php';
             <!-- Right Panel: Permissions Matrix for Selected Role -->
             <section class="roles-content">
                 <?php if ($selectedRole): ?>
-                    <div class="card">
+                    <div class="card permissions-card">
                         <div class="permissions-header">
-                            <div>
+                            <div class="permissions-header-info">
                                 <h2>Permissions for: <?= htmlspecialchars($selectedRole['name'], ENT_QUOTES, 'UTF-8') ?></h2>
                                 <?php if (!empty($selectedRole['description'])): ?>
                                     <p class="text-muted"><?= htmlspecialchars($selectedRole['description'], ENT_QUOTES, 'UTF-8') ?></p>
                                 <?php endif; ?>
                             </div>
+                            <?php if (empty($selectedRole['is_super'])): ?>
+                                <button type="submit" form="permissions-form" class="btn btn-primary btn-sm permissions-save-top-btn">Save Permissions</button>
+                            <?php endif; ?>
                         </div>
 
                         <?php if (!empty($selectedRole['is_super'])): ?>
@@ -108,7 +111,7 @@ require __DIR__ . '/layout/header.php';
                             </div>
                         <?php endif; ?>
 
-                        <form method="POST" action="/roles">
+                        <form method="POST" action="/roles" id="permissions-form">
                             <input type="hidden" name="action" value="save_permissions">
                             <input type="hidden" name="role_id" value="<?= (int)$selectedRole['id'] ?>">
 
